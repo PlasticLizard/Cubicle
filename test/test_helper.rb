@@ -10,8 +10,10 @@ module ActiveSupport
     def setup
       Cubicle.register_cubicle_directory("cubicles")
       dir = File.expand_path(File.dirname(__FILE__))
+      logdir = File.join(dir,'log')
+      Dir.mkdir(logdir) unless File.directory?(logdir)
       Cubicle.mongo.setup(YAML.load_file(File.join(dir,'config', 'database.yml')), "test", {
-              :logger    => Logger.new(File.join(dir,'log','test.log')),
+              :logger    => Logger.new(File.join(logdir,'test.log')),
               :passenger => false
       })
     end
