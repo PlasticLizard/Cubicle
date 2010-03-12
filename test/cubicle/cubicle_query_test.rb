@@ -40,7 +40,6 @@ class CubicleQueryTest < ActiveSupport::TestCase
         select :all_measures
         by :date
       end
-      puts query_results.inspect
       assert_equal :manufacture_date, query_results.name
       assert_equal "2009-12-09", query_results.member_names[0]
     end

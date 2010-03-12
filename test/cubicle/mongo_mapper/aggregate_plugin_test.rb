@@ -1,8 +1,14 @@
 begin
   require "rubygems"
   require "mongo_mapper"
-  require "../test_helper"
+  begin
+    require "test_helper"
+  rescue LoadError
+    require "../../test_helper"
+  end
 
+  require File.join(File.dirname(__FILE__),"../../../lib/cubicle/mongo_mapper/aggregate_plugin")
+  
   class AggregatePluginTest < ActiveSupport::TestCase
     context "A freshly minted MongoMapper model" do
       setup do
@@ -27,6 +33,7 @@ begin
       end
     end
   end
-rescue Exception => ex
+rescue LoadError => ex
   puts "MongoMapper gem not installed...plugin test skipped"
+  puts ex.to_s
 end

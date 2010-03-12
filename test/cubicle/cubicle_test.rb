@@ -144,7 +144,6 @@ class CubicleTest < ActiveSupport::TestCase
             select :manufacture_date, :all_measures
             where  :date=>"2009-12-09"
           end
-          puts @results.inspect
         end
         should "return a filtered subset of data" do
           assert_equal 1, @results.length
@@ -181,7 +180,6 @@ class CubicleTest < ActiveSupport::TestCase
             select :date, :all_measures
             where  :date=>"2009-12-09"
           end
-          puts @results.inspect
         end
         should "return a filtered subset of data" do
           assert_equal 1, @results.length
@@ -200,7 +198,6 @@ class CubicleTest < ActiveSupport::TestCase
             select :product, :all_measures
             where  "$where"=>"this._id.product=='Sad Day Moonshine'"
           end
-          puts @results.inspect
         end
         should "return a filtered subset of data" do
           assert_equal 1, @results.length
@@ -239,7 +236,6 @@ class CubicleTest < ActiveSupport::TestCase
             select :product,:all_measures
             where  :month=>"2010-01"
           end
-          puts @results.inspect
         end
         should "return a filtered subset of data" do
           assert_equal 2, @results.length
@@ -270,7 +266,6 @@ class CubicleTest < ActiveSupport::TestCase
             select :product,:all_measures
             order_by [:product, :desc]
           end
-          puts @results.inspect
         end
         should "return sorted data" do
           assert_equal 3, @results.length
@@ -286,7 +281,6 @@ class CubicleTest < ActiveSupport::TestCase
           DefectCubicle.process
         end
         should "should create the specified aggregations" do
-          puts Cubicle.mongo.database.collection_names.inspect
           assert Cubicle.mongo.database.collection_names.include? "defect_cubicles_cubicle_aggregation_month.product.year"
           assert Cubicle.mongo.database.collection_names.include? "defect_cubicles_cubicle_aggregation_month.region"
         end

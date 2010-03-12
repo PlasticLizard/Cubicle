@@ -1,14 +1,17 @@
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+
 dir = File.dirname(__FILE__)
 require File.join(dir,"..","lib","cubicle")
 require 'active_support/test_case'
 require "shoulda"
 require "logger"
 require File.join(dir,"models","defect")
+Cubicle.register_cubicle_directory(File.join(dir,"cubicles"))
+
 
 module ActiveSupport
   class TestCase
     def setup
-      Cubicle.register_cubicle_directory("cubicles")
       dir = File.expand_path(File.dirname(__FILE__))
       logdir = File.join(dir,'log')
       Dir.mkdir(logdir) unless File.directory?(logdir)

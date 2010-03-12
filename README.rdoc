@@ -1,0 +1,37 @@
+== Description
+
+
+== Install
+
+Install the gem with:
+
+    gem install cubicle
+          or
+    sudo gem install cubicle
+
+== Header One
+
+
+== Basic Example
+
+
+== Limitations
+
+
+== Motivation
+
+
+== Credits
+
+* alex_wang, patrickgannon for features, fixes & testing
+
+== Bugs/Issues
+Please report them {on github}[http://github.com/plasticlizard/cubicle/issues].
+
+== Links
+
+== Todo
+* Work with native Date type, instead of just iso strings
+* Hirb support
+* Member format strings
+* Auto gen of a cubicle definition based on existing keys/key types in the MongoMapper plugin
