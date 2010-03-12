@@ -74,7 +74,7 @@ module Cubicle
       @time_range.by!(@time_period)
 
       @time_range.each do |date|
-        formatted_date = date.db_string(@time_period)
+        formatted_date = date.to_cubicle(@time_period)
         data_level[formatted_date] = [Cubicle::DataLevel.new(:measures,{})] unless data_level.include?(formatted_date)
       end
       data_level.keys.sort!

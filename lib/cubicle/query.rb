@@ -251,8 +251,8 @@ module Cubicle
         time_filter = {}
 
         dim_name =  time_dimension.name
-        time_filter["$gte"]=@from_date.utc.db_string(@time_period) if @from_date
-        time_filter["$lte"]=@to_date.utc.db_string(@time_period) if @to_date
+        time_filter["$gte"]=@from_date.utc.to_cubicle(@time_period) if @from_date
+        time_filter["$lte"]=@to_date.utc.to_cubicle(@time_period) if @to_date
         (@where ||= {})[dim_name] = time_filter
       end
       @where
