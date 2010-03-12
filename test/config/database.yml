@@ -1,0 +1,15 @@
+development: &global_settings
+  database: cubicle_dev
+  host: 127.0.0.1
+  port: 27017
+
+test: 
+  database: cubicle_test
+  <<: *global_settings
+
+production:
+  database: cubicle
+  #username: username
+  #password: password
+  <<: *global_settings
+
