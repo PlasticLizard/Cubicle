@@ -1,12 +1,12 @@
-require "../lib/cubicle"
+dir = File.dirname(__FILE__)
+require File.join(dir,"..","lib","cubicle")
 require 'active_support/test_case'
 require "shoulda"
 require "logger"
-require "models/defect"
+require File.join(dir,"models","defect")
 
 module ActiveSupport
   class TestCase
-
     def setup
       Cubicle.register_cubicle_directory("cubicles")
       dir = File.expand_path(File.dirname(__FILE__))

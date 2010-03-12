@@ -12,7 +12,10 @@ dir = File.dirname(__FILE__)
  "ratio",
  "query",
  "data_level",
- "data"].each {|lib|require File.join(dir,'cubicle',lib)}
+ "data",
+ "aggregation"].each {|lib|require File.join(dir,'cubicle',lib)}
+
+require File.join(dir,"cubicle","mongo_mapper","aggregate_plugin") if defined?(MongoMapper::Document)
 
 module Cubicle
 
@@ -22,7 +25,7 @@ module Cubicle
   end
 
   def self.mongo
-    @mongo ||= defined?(MongoMapper) ? MongoMapper : MongoEnvironment
+    @mongo ||= defined?(::MongoMapper::Document) ? ::MongoMapper : MongoEnvironment
   end
 
   def self.logger
@@ -67,13 +70,7 @@ module Cubicle
     @target_name ||= "#{name.blank? ? source_collection_name : name.underscore.pluralize}_cubicle"
   end
   alias target_collection_name= target_collection_name
-
-
-  def description(description = nil)
-    return @description unless description
-    @description = description
-  end
-
+  
   def dimension(*args)
     dimensions << Cubicle::Dimension.new(*args)
     dimensions[-1]
@@ -123,8 +120,6 @@ module Cubicle
     options[:aggregation_method] = :sum
     measure(*(args << options))
   end
-
-
 
   def ratio(member_name, numerator, denominator)
     measures << Ratio.new(member_name, numerator, denominator)

@@ -4,7 +4,6 @@ class CubicleQueryTest < ActiveSupport::TestCase
   context "CubicleQuery#select" do
     setup do
       Defect.create_test_data
-      DefectCubicle.process
     end
     should "raise an exception when given a non-existent member" do
       assert_raise RuntimeError do

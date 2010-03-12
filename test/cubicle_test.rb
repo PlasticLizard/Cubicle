@@ -36,8 +36,8 @@ class CubicleTest < ActiveSupport::TestCase
           assert_equal "Repaired", @results[1]["outcome"]
           assert_equal 2, @results[1]["total_defects"]
           assert_equal 1, @results[1]["preventable_defects"]
-          assert_in_delta 0.001, 12.97, @results[1]["total_cost"]
-          assert_in_delta 0.001, 6.485, @results[1]["avg_cost"]
+          assert_in_delta 12.97, @results[1]["total_cost"], 0.0001
+          assert_in_delta 6.485, @results[1]["avg_cost"],0.0001
           assert_equal 0.5, @results[1]["preventable_pct"]
 
           assert_equal "2010-01-05", @results[2]["manufacture_date"]
@@ -169,9 +169,9 @@ class CubicleTest < ActiveSupport::TestCase
           assert_equal "Sad Day Moonshine", @results[0]["product"]
           assert_equal 3, @results[0]["total_defects"]
           assert_equal 2, @results[0]["preventable_defects"]
-          assert_in_delta 0.0001, 15.91, @results[0]["total_cost"]
-          assert_in_delta 0.0001, 15.91/3, @results[0]["avg_cost"]
-          assert_in_delta 0.0001, 2/3.0, @results[0]["preventable_pct"]
+          assert_in_delta 15.91, @results[0]["total_cost"],0.0001
+          assert_in_delta 15.91/3, @results[0]["avg_cost"],0.0001
+          assert_in_delta 2/3.0, @results[0]["preventable_pct"],0.0001
         end
 
       end
@@ -207,8 +207,8 @@ class CubicleTest < ActiveSupport::TestCase
           assert_equal "Sad Day Moonshine", @results[0]["product"]
           assert_equal 3, @results[0]["total_defects"]
           assert_equal 2, @results[0]["preventable_defects"]
-          assert_in_delta 0.0001, 15.91, @results[0]["total_cost"]
-          assert_in_delta 0.0001, 15.91/3, @results[0]["avg_cost"]
+          assert_in_delta 15.91, @results[0]["total_cost"],0.0001
+          assert_in_delta 15.91/3, @results[0]["avg_cost"],0.0001
           assert_equal 2/3.0, @results[0]["preventable_pct"]
         end
 
