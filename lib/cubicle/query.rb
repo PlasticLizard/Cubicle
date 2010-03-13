@@ -99,7 +99,6 @@ module Cubicle
       @offset = in_offset
       return self
     end
-
     alias skip offset
 
     def by(*args)
@@ -139,11 +138,11 @@ module Cubicle
       ((@from_date || Time.now)..(@to_date || Time.now))
     end
 
-    def time_dimension(dimension_name = nil)
-      return (@time_dimension ||= @cubicle.time_dimension) unless dimension_name
-      @time_dimension = @cubicle.dimensions[dimension_name]
-      raise "No dimension matching the name #{dimension_name} could be found in the underlying data source" unless @time_dimension
-      select @time_dimension unless selected?(dimension_name)
+    def time_dimension(dimension = nil)
+      return (@time_dimension ||= @cubicle.time_dimension) unless dimension
+      @time_dimension = dimension.is_a?(Cubicle::Dimension) ? dimension : @cubicle.dimensions[dimension]
+      raise "No dimension matching the name #{dimension} could be found in the underlying data source" unless @time_dimension
+      select @time_dimension unless selected?(dimension)
     end
     alias date_dimension time_dimension
 
@@ -152,7 +151,6 @@ module Cubicle
       period = duration.parts[0][0]
       @from_date = duration.ago(as_of).advance(period=>1)
       @to_date = as_of
-      self
     end
     alias for_the_last last
 
@@ -169,12 +167,10 @@ module Cubicle
       period = duration.parts[0][0]
       @to_date = duration.from_now(as_of).advance(period=>-1)
       @from_date = as_of
-      self
     end
     alias for_the_next next
 
     def this(period,as_of = Time.now)
-      @from_date = as_of.beginning_of(period)
       @from_date = as_of.beginning_of(period)
       @to_date = as_of
       self
@@ -245,7 +241,7 @@ module Cubicle
         @time_period ||= detect_time_period || :date
 
         if transient? && time_dimension.expression_type != :field_name
-          raise "You are attempting to filter against the derived dimension (#{time_dim.name}=#{dim_time.expression}) in a transient query. This is not allowed in transient queries, which only allow filtering fields specified using :field_name"
+          raise "You are attempting to filter against the derived dimension (#{time_dimension.name}=#{time_dimension.expression}) in a transient query. This is not allowed in transient queries, which only allow filtering fields specified using :field_name"
         end
 
         time_filter = {}

@@ -13,7 +13,9 @@ dir = File.dirname(__FILE__)
  "query",
  "data_level",
  "data",
- "aggregation"].each {|lib|require File.join(dir,'cubicle',lib)}
+ "aggregation",
+ "date_time",
+ "support"].each {|lib|require File.join(dir,'cubicle',lib)}
 
 require File.join(dir,"cubicle","mongo_mapper","aggregate_plugin") if defined?(MongoMapper::Document)
 
