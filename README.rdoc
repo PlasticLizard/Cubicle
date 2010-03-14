@@ -37,7 +37,7 @@ here's how a Cubicle designed to analyze these poker hands might look:
         dimension  :year,      :expression=>'this.match_date.substring(0,4)'
 
         dimensions :table,     :winning_hand
-        dimension :winner,     :field_name=>”winner.name”
+        dimension :winner,     :field_name=>'winner.name'
 
         count :total_hands,    :expression=>'true'
         count :total_draws,    :expression=>'this.winning_hand=="draw"'
@@ -62,7 +62,7 @@ Or, if you wanted to see the total amount won with a full house, by player, sort
 
     full_houses_by_player = PokerHandCubicle.query do
         select :winner
-        where :winning_hand=>”full_house”
+        where :winning_hand=>'full_house'
         order_by :total_winnings
     end
 
@@ -89,15 +89,15 @@ or
     end
 
 == The Results
-Cubicle data is returned as either an array of hashes, for a two dimensional query, or a hash-based tree the leaves of which are arrays of hashes for hierarchical data (via queries using the “by” keyword)
+Cubicle data is returned as either an array of hashes, for a two dimensional query, or a hash-based tree the leaves of which are arrays of hashes for hierarchical data (via queries using the 'by' keyword)
 
 Flat data:
-    [{:dimension1=>”d1”, :dimension2=>”d1”, :measure1=>”1.0”},{:dimension1=>”d2”...
+    [{:dimension1=>'d1', :dimension2=>'d1', :measure1=>'1.0'},{:dimension1=>'d2'...
 
 Hierarchical data 2 levels deep:
-    {“dimension 1”=>{“dimension2”=>[{:measures1=>”1.0”}],”dimension2b”=>[{measure1=>”2.0”}],...
+    {“dimension 1'=>{“dimension2'=>[{:measures1=>'1.0'}],'dimension2b'=>[{measure1=>'2.0'}],...
 
-When you request two dimensional data (i.e. you do not use the “by” keyword) you can transform your two dimensional data set into hierarchical data at any time using the “hierarchize” method, specifying the dimensions you want to use in your hierarchy:
+When you request two dimensional data (i.e. you do not use the “by' keyword) you can transform your two dimensional data set into hierarchical data at any time using the “hierarchize' method, specifying the dimensions you want to use in your hierarchy:
 
     data = MyCubicle.query {select :date, :name, :all_measures}
     hierarchized_data = data.hierarchize :name, :date
@@ -124,7 +124,7 @@ The expected normal mode of operation, however, is cached mode. While far from a
 When aggregations are specified in this way, then Cubicle will pre-aggregate your data for each of the specified combinations of dimensions whenever MyCubicle.process is called, eliminating the first-hit penalty that would otherwise be incurred when Cubicle encountered a given aggregation for the first time.
 
 == Transient (Real Time) Queries
-Sometimes you may not want to query cached data. In our application, we are using Cubicle to provide data for our performance management Key Performance Indicators (KPI's) which consist of both a historical trend of a particular metric as well as the current, real time value of the same metric for, say, the current month or a rolling 30 day period. For performance reasons, we fetch our trend, which is usually 12 months, from cached data but want up to the minute freshness for our real time KPI values, so we need to query the living source data. To accomplish this using Cubicle, you simply insert “transient!” into your query definition, like so
+Sometimes you may not want to query cached data. In our application, we are using Cubicle to provide data for our performance management Key Performance Indicators (KPI's) which consist of both a historical trend of a particular metric as well as the current, real time value of the same metric for, say, the current month or a rolling 30 day period. For performance reasons, we fetch our trend, which is usually 12 months, from cached data but want up to the minute freshness for our real time KPI values, so we need to query the living source data. To accomplish this using Cubicle, you simply insert “transient!' into your query definition, like so
 
     MyCubicle.query do
         transient!
