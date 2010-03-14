@@ -1,5 +1,14 @@
-== Description
+== Overview
+Cubicle is a Ruby library and DSL for automating the generation, execution and caching of common aggregations of MongoDB documents. Cubicle was born from the need to easily extract simple, processed statistical views of raw, real time business data being collected from a variety of systems.
 
+== Motivation
+Aggregating data in MongoDB, unlike relational or multidimensional (OLAP) database, requires writing custom reduce functions in JavaScript for the simplest cases and full map reduce functions in the more complex cases, even for common aggregations like sums or averages.
+
+While writing such map reduce functions isn't particularly difficult it can be tedious and error prone and requires switching from Ruby to JavaScript. Cubicle presents a simplified Ruby DSL for generating the JavaScript required for most common aggregation tasks and also handles processing, caching and presenting the  results. JavaScript is still required in some cases, but is limited to constructing simple data transformation expressions.
+
+
+== Approach
+Cubicle breaks the task of defining and executing aggregation queries into two pieces. The first is the Cubicle, an analysis friendly 'view' of  the underlying collection which defines both the attributes that will be used for grouping  (dimensions) , the numerical fields that will be aggregated (measures), and  kind of aggregation will be applied to each measure.  The second piece of the Cubicle puzzle is a Query  which specifies which particular dimensions or measures will be selected from the Cubicle for a given data request, along with how the resulting data will be filtered, ordered, paginated and organized.
 
 == Install
 
@@ -9,21 +18,145 @@ Install the gem with:
           or
     sudo gem install cubicle
 
-== Header One
+
+== An Example
+Given a document with the following structure (I'm using MongoMapper here as the ORM, but MongoMapper, or any other ORM, is not required by Cubicle, it works directly with the Mongo-Ruby Driver)
+
+    class PokerHand
+        include MongoMapper::Document
+
+        key :match_date, String    #we use iso8601 strings for dates, but Time works too
+        key :table, String
+        key :winner, Person 	   # {:person=>{:name=>'Jim', :address=>{...}...}}
+        key :winning_hand, Symbol  #:two_of_a_kind, :full_house, etc...
+        key :amount_won, Float
+    end
+
+== The Cubicle
+here's how a Cubicle designed to analyze these poker hands might look:
+
+    class PokerHandCubicle
+        extend Cubicle
+
+        date       :date,      :field_name=>'match_date'
+        dimension  :month,     :expression=>'this.match_date.substring(0,7)'
+        dimension  :year,      :expression=>'this.match_date.substring(0,4)'
+
+        dimensions :table,     :winning_hand
+        dimension :winner,     :field_name=>'winner.name'
+
+        count :total_hands,    :expression=>'true'
+        count :total_draws,    :expression=>'this.winning_hand=="draw"'
+        sum   :total_winnings, :field_name=>'amount_won'
+        avg   :avg_winnings,   :field_name=>'amount_won'
+
+        ratio :draw_pct,       :total_draws, :total_hands
+    end
+
+== The Queries
+The Queries
+And here's how you would use this cubicle to query the underlying data:
+
+    aggregated_data = PokerHandCubicle.query
 
 
-== Basic Example
+Issuing an empty query to the cubicle like the one above will return a list of measures aggregated according to type for each combination of dimensions. However, once a Cubicle has been defined, you can query it in many different ways. For instance if you wanted to see the total number of hands by type, you could do this:
 
+    hands_by_type = PokerHandCubicle.query { select :winning_hand, :total_hands }
 
+Or, if you wanted to see the total amount won with a full house, by player, sorted by amount won, you could do this:
+
+    full_houses_by_player = PokerHandCubicle.query do
+        select :winner
+        where :winning_hand=>'full_house'
+        order_by :total_winnings
+    end
+
+Cubicle can return your data in a hierarchy (tree) too, if you want. If you wanted to see the percent of hands resulting in a draw by table by day, you could do this:
+
+    draw_pct_by_player_by_day = PokerHandCubicle.query do
+        select :draw_pct
+        by :date, :table
+    end
+
+In addition to the basic query primitives such as select, where, by and order_by, Cubicle has a basic understanding of time, so as long as you have a dimension in your cubicle defined using 'date', and that dimension is either an iso8601 string or an instance of Time, then you can easily perform some handy date filtering in the DSL:
+
+    winnings_last_30_days_by_player = PokerHandCubicle.query do
+        select :winner, :total_winnings
+        for_the_last 30.days
+    end
+
+or
+
+    winnings_ytd_by_player = PokerHandCubicle.query do
+        select :winner, :all_measures
+        year_to_date
+        order_by [:total_winnings, :desc]
+    end
+
+== The Results
+Cubicle data is returned as either an array of hashes, for a two dimensional query, or a hash-based tree the leaves of which are arrays of hashes for hierarchical data (via queries using the 'by' keyword)
+
+Flat data:
+    [{:dimension1=>'d1', :dimension2=>'d1', :measure1=>'1.0'},{:dimension1=>'d2'...
+
+Hierarchical data 2 levels deep:
+    {'dimension 1'=>{'dimension2'=>[{:measures1=>'1.0'}],'dimension2b'=>[{measure1=>'2.0'}],...
+
+When you request two dimensional data (i.e. you do not use the 'by' keyword) you can transform your two dimensional data set into hierarchical data at any time using the 'hierarchize' method, specifying the dimensions you want to use in your hierarchy:
+
+    data = MyCubicle.query {select :date, :name, :all_measures}
+    hierarchized_data = data.hierarchize :name, :date
+
+This will result in a hash containing each unique value for :name in your source collection, and for each unique :name, a hash containing each unique :date with that :name, and for each :date, an array of hashes keyed by the measures in your Cubicle.
+
+== Caching & Processing
+Map reduce operations, especially over large or very large data sets, can take time to complete. Sometimes a long time. However, very often what you want to do is present a graph or a table of numbers to an interactive user on your website, and you probably don't want to make them wait for all your bazillion rows of raw data to be reduced down to the handful of numbers they are actually interested in seeing. For this reason, Cubicle has two modes of operation, the normal default mode in which aggregations are automatically cached until YourCubicle.expire! Or YourCubicle.process is called, and transient mode, which bypasses the caching mechanisms and executes real time queries against the raw source data.
+
+== Preprocessed Aggregations
+The expected normal mode of operation, however, is cached mode. While far from anything actually resembling an OLAP cube, Cubicle was designed to to process data on some periodic schedule and provide quick access to stored, aggregated data in between each processing, much like a real OLAP cube. Also reminiscent of an OLAP cube, Cubicle will cache aggregations at various levels of resolution, depending on the aggregations that were set up when defining a cubicle and depending on what queries are executed. For example, if a given Cubicle has three dimensions, Name, City and Date, when the Cubicle is processed, it will calculated aggregated measures for each combination of values on those three fields. If a query is executed that only requires Name and Date, then Cubicle will aggregate and cache measures by just Name and Date. If a third query asks for just Name, then Cubicle will create an aggregation based just on Name, but rather than using the original data source with its many rows, it will execute its map reduce against the previously cached Name-Date aggregation, which by definition will have fewer rows and should therefore perform faster. If you are aware ahead of time the aggregations your queries will need, you can specify them in the Cubicle definition, like this
+    class MyCubicle
+        extend Cubicle
+        dimension :name
+        dimension :date
+        ...
+        avg :my_measure
+        ...
+        aggregate :name, :date
+        aggregate :name
+        aggregate :date
+    end
+
+When aggregations are specified in this way, then Cubicle will pre-aggregate your data for each of the specified combinations of dimensions whenever MyCubicle.process is called, eliminating the first-hit penalty that would otherwise be incurred when Cubicle encountered a given aggregation for the first time.
+
+== Transient (Real Time) Queries
+Sometimes you may not want to query cached data. In our application, we are using Cubicle to provide data for our performance management Key Performance Indicators (KPI's) which consist of both a historical trend of a particular metric as well as the current, real time value of the same metric for, say, the current month or a rolling 30 day period. For performance reasons, we fetch our trend, which is usually 12 months, from cached data but want up to the minute freshness for our real time KPI values, so we need to query the living source data. To accomplish this using Cubicle, you simply insert 'transient!' into your query definition, like so
+
+    MyCubicle.query do
+        transient!
+        select :this, :that, :the_other
+    end
+
+This will bypass cached aggregations and execute a map reduce query directly against the cubicle source collection.
+
+== Mongo Mapper plugin
+If MongoMapper is detected, Cubicle will use its connection to MongoDB. Additionally, Cubicle will install a simple MongoMapper plugin for doing ad-hoc, non-cached aggregations on the fly from a MongoMapper document, like this:
+    MyMongoMapperModel.aggregate do
+        dimension :my_dimension
+        count :measure1
+        avg :measure2
+    end.query {order_by [:measure2, :desc]; limit 10;}
+    
 == Limitations
-
-
-== Motivation
+* Cubicle cannot currently cause child documents to be emitted in the map reduce. This is a pretty big limitation, and will be resolved shortly.
+* Documentation is non-existent. This is being worked on (head that one before?)
+* Test coverage is OK, but the tests could be better organized
+* Code needs to be modularized a bit, main classes are a bit hairy at the moment
 
 
 == Credits
 
-* alex_wang, patrickgannon for features, fixes & testing
+* Alex Wang, Patrick Gannon for features, fixes & testing
 
 == Bugs/Issues
 Please report them {on github}[http://github.com/plasticlizard/cubicle/issues].
@@ -31,7 +164,10 @@ Please report them {on github}[http://github.com/plasticlizard/cubicle/issues].
 == Links
 
 == Todo
+* Support for emitting child / descendant documents
 * Work with native Date type, instead of just iso strings
 * Hirb support
 * Member format strings
 * Auto gen of a cubicle definition based on existing keys/key types in the MongoMapper plugin
+* DSL support for topcount and bottomcount queries
+* Support for 'duration' aggregation that will calculated durations between timestamps
