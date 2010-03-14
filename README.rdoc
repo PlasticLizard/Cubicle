@@ -143,7 +143,9 @@ If MongoMapper is detected, Cubicle will use its connection to MongoDB. Addition
     
 == Limitations
 * Cubicle cannot currently cause child documents to be emitted in the map reduce. This is a pretty big limitation, and will be resolved shortly.
-
+* Documentation is non-existent. This is being worked on (head that one before?)
+* Testing coverage is OK, but the tests could be better organized
+* Code needs to be modularized a bit, main classes are a bit hairy at the moment
 
 == Motivation
 Aggregating data in MongoDB, unlike relational or multidimensional (OLAP) database, requires writing custom reduce functions in JavaScript for the simplest cases and full map reduce functions in the more complex cases, even for common aggregations like sums or averages.
@@ -166,3 +168,4 @@ Please report them {on github}[http://github.com/plasticlizard/cubicle/issues].
 * Member format strings
 * Auto gen of a cubicle definition based on existing keys/key types in the MongoMapper plugin
 * DSL support for topcount and bottomcount queries
+* Support for 'duration' aggregation that will calculated durations between timestamps
