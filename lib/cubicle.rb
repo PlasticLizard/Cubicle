@@ -1,6 +1,7 @@
 require "rubygems"
 require "active_support"
 require "mongo"
+require "logger"
 
 dir = File.dirname(__FILE__)
 ["mongo_environment",
@@ -31,7 +32,7 @@ module Cubicle
   end
 
   def self.logger
-    Cubicle.mongo.logger
+    Cubicle.mongo.logger || Logger.new("cubicle.log")
   end
 
   def database
