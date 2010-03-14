@@ -42,7 +42,8 @@ here's how a Cubicle designed to analyze these poker hands might look:
         dimension  :month,     :expression=>'this.match_date.substring(0,7)'
         dimension  :year,      :expression=>'this.match_date.substring(0,4)'
 
-        dimensions :table,     :winning_hand
+        dimensions :table,
+                   :winning_hand
         dimension :winner,     :field_name=>'winner.name'
 
         count :total_hands,    :expression=>'true'
