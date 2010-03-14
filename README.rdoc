@@ -6,6 +6,10 @@ Aggregating data in MongoDB, unlike relational or multidimensional (OLAP) databa
 
 While writing such map reduce functions isn't particularly difficult it can be tedious and error prone and requires switching from Ruby to JavaScript. Cubicle presents a simplified Ruby DSL for generating the JavaScript required for most common aggregation tasks and also handles processing, caching and presenting the  results. JavaScript is still required in some cases, but is limited to constructing simple data transformation expressions.
 
+
+== Approach
+Cubicle breaks the task of defining and executing aggregation queries into two pieces. The first is the Cubicle, an analysis friendly 'view' of  the underlying collection which defines both the attributes that will be used for grouping  (dimensions) , the numerical fields that will be aggregated (measures), and  kind of aggregation will be applied to each measure.  The second piece of the Cubicle puzzle is a Query  which specifies which particular dimensions or measures will be selected from the Cubicle for a given data request, along with how the resulting data will be filtered, ordered, paginated and organized.
+
 == Install
 
 Install the gem with:
@@ -14,9 +18,6 @@ Install the gem with:
           or
     sudo gem install cubicle
 
-
-== Approach
-Cubicle breaks the task of defining and executing aggregation queries into two pieces. The first is the Cubicle, an analysis friendly 'view' of  the underlying collection which defines both the attributes that will be used for grouping  (dimensions) , the numerical fields that will be aggregated (measures), and  kind of aggregation will be applied to each measure.  The second piece of the Cubicle puzzle is a Query  which specifies which particular dimensions or measures will be selected from the Cubicle for a given data request, along with how the resulting data will be filtered, ordered, paginated and organized.
 
 == An Example
 Given a document with the following structure (I'm using MongoMapper here as the ORM, but MongoMapper, or any other ORM, is not required by Cubicle, it works directly with the Mongo-Ruby Driver)
