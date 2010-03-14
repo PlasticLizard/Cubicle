@@ -1,7 +1,7 @@
 module Cubicle
   module DateTime
     def self.db_time_format
-      @time_format ||= :iso8601 #or :native
+      @time_format ||= :iso8601 #or :native || :time || anything not :iso8601
     end
 
     def self.db_time_format=(time_format)

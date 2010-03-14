@@ -14,6 +14,12 @@ module Cubicle
       @transient = false
       @by=[]
       @order_by=[]
+      @from_date_filter = "$gte"
+      @to_date_filter = "$lte"
+    end
+
+    def clone
+      Marshal.load(Marshal.dump(self))
     end
 
     def select_all
@@ -112,17 +118,17 @@ module Cubicle
       return if @time_dimension #If a time dimension has been explicitly specified, the following isn't helpful.
 
       #Now let's see if we can find ourselves a time dimension
-      if (@cubicle.time_dimension && time_dimension.included_in?(args))
-        time_dimension(@cubicle.time_dimension)
-      else
-        args.each do |by_member|
-          if (detected = detect_time_period by_member)
-            time_dimension by_member
-            @time_period = detected
-            break
-          end
-        end
-      end
+#      if (@cubicle.time_dimension && time_dimension.included_in?(args))
+#        time_dimension(@cubicle.time_dimension)
+#      else
+#        args.each do |by_member|
+#          if (detected = detect_time_period by_member)
+#            time_dimension by_member
+#            @time_period = detected
+#            break
+#          end
+#        end
+#      end
     end
 
     def order_by(*args)
@@ -134,15 +140,16 @@ module Cubicle
 
     def time_range(date_range = nil)
       return nil unless date_range || @from_date || @to_date
-      return @from_date, @to_date = date_range.first, date_range.last if date_range
-      ((@from_date || Time.now)..(@to_date || Time.now))
+      return ((@from_date || Time.now)..(@to_date || Time.now)) unless date_range
+      @to_date_filter = date_range.exclude_end? ? "$lt" : "$lte"
+      @from_date, @to_date = date_range.first, date_range.last if date_range
     end
 
     def time_dimension(dimension = nil)
       return (@time_dimension ||= @cubicle.time_dimension) unless dimension
       @time_dimension = dimension.is_a?(Cubicle::Dimension) ? dimension : @cubicle.dimensions[dimension]
       raise "No dimension matching the name #{dimension} could be found in the underlying data source" unless @time_dimension
-      select @time_dimension unless selected?(dimension)
+      #select @time_dimension unless selected?(dimension)
     end
     alias date_dimension time_dimension
 
@@ -157,8 +164,9 @@ module Cubicle
     def last_complete(duration,as_of = Time.now)
       duration = 1.send(duration) if [:year,:month,:week,:day].include?(duration)
       period = duration.parts[0][0]
-      @to_date = as_of.advance(period=>-1).beginning_of(period)
-      @from_date = duration.ago(@to_date).advance(period=>1)
+      @to_date = as_of.beginning_of(period)
+      @from_date = duration.ago(@to_date)
+      @to_date_filter = "$lt"
     end
     alias for_the_last_complete last_complete
 
@@ -218,6 +226,10 @@ module Cubicle
       return dimensions.map{|dim|dim.name.to_s}
     end
 
+    def member_names
+      return (dimensions + measures).map{|m|m.name.to_s}
+    end
+
     def dimensions
       return @dimensions unless all_dimensions?
       @cubicle.dimensions.collect{|dim|convert_dimension(dim)}
@@ -247,8 +259,8 @@ module Cubicle
         time_filter = {}
 
         dim_name =  time_dimension.name
-        time_filter["$gte"]=@from_date.utc.to_cubicle(@time_period) if @from_date
-        time_filter["$lte"]=@to_date.utc.to_cubicle(@time_period) if @to_date
+        time_filter[@from_date_filter]=@from_date.utc.to_cubicle(@time_period) if @from_date
+        time_filter[@to_date_filter]=@to_date.utc.to_cubicle(@time_period) if @to_date
         (@where ||= {})[dim_name] = time_filter
       end
       @where

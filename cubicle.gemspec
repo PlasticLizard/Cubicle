@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cubicle}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nathan Stults"]
@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "cubicle.gemspec",
-     "cubicle.log",
      "lib/cubicle.rb",
      "lib/cubicle/aggregation.rb",
      "lib/cubicle/calculated_measure.rb",
@@ -54,7 +53,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/PlasticLizard/cubicle}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Pseudo-Multi Dimensional analysis / simplified aggregation for MongoDB in Ruby (NOLAP ;))}
   s.test_files = [
     "test/cubicle/cubicle_aggregation_test.rb",

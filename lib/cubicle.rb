@@ -73,7 +73,7 @@ module Cubicle
     @target_name ||= "#{name.blank? ? source_collection_name : name.underscore.pluralize}_cubicle"
   end
   alias target_collection_name= target_collection_name
-  
+
   def dimension(*args)
     dimensions << Cubicle::Dimension.new(*args)
     dimensions[-1]
@@ -173,22 +173,25 @@ module Cubicle
     }
 
     find_options[:sort] = prepare_order_by(query)
-
-    data = if query == self || query.transient?
-      result = aggregate(query,options)
-      return result if result == []
-
-      count = result.count
-
-      output = result.find({}, find_options).to_a
-      result.drop
-      output
+    filter = {}
+    if query == self || query.transient?
+      aggregation = aggregate(query,options)
     else
       process_if_required
-      filter = prepare_filter(query,options[:where] || {})
-      aggregation_for(query).find(filter,find_options).to_a
+      aggregation = aggregation_for(query)
+      #if the query exactly matches the aggregation in terms of requested members, we can issue a simple find
+      #otherwise, a second map reduce is required to reduce the data set one last time
+      if ((aggregation.name.split("_")[-1].split(".")) - query.member_names - [:all_measures]).blank?
+        filter = prepare_filter(query,options[:where] || {})
+      else
+        aggregation = aggregate(query,:source_collection=>collection.name)
+      end
     end
-
+    count = aggregation.count
+    #noinspection RubyArgCount
+    data = aggregation.find(filter,find_options).to_a
+    #noinspection RubyArgCount
+    aggregation.drop if aggregation.name =~ /^tmp.mr.*/
     Cubicle::Data.new(query, data, count)
   end
 
@@ -246,18 +249,19 @@ module Cubicle
   def aggregation_for(query)
     return collection if query.all_dimensions?
 
+    aggregation_query = query.clone
     #If the query needs to filter on a field, it had better be in the aggregation...if it isn't a $where filter...
     filter = (query.where if query.respond_to?(:where))
-    filter.keys.each {|filter_key|query.select(filter_key) unless filter_key=~/^\$.*/} unless filter.blank?
+    filter.keys.each {|filter_key|aggregation_query.select(filter_key) unless filter_key=~/^\$.*/} unless filter.blank?
 
-    dimension_names = query.dimension_names.sort
+    dimension_names = aggregation_query.dimension_names.sort
     agg_col_name = "#{target_collection_name}_aggregation_#{dimension_names.join('.')}"
-    return database[agg_col_name] if database.collection_names.include?(agg_col_name)
 
-    source_col_name = find_best_source_collection(dimension_names)
-
-    aggregation_query = query(dimension_names + [:all_measures], :source_collection=>source_col_name, :defer=>true)
-    aggregate(aggregation_query, :target_collection=>agg_col_name)
+    unless database.collection_names.include?(agg_col_name)
+      source_col_name = find_best_source_collection(dimension_names)
+      exec_query = query(dimension_names + [:all_measures], :source_collection=>source_col_name, :defer=>true)
+      aggregate(exec_query, :target_collection=>agg_col_name)
+    end
 
     database[agg_col_name]
   end

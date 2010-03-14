@@ -4,7 +4,9 @@ class DefectCubicle
   date       :manufacture_date,  :field_name=>'manufacture_date', :alias=>:date
   dimension  :month,             :expression=>'this.manufacture_date.substring(0,7)'
   dimension  :year,              :expression=>'this.manufacture_date.substring(0,4)'
-  
+
+  dimension  :manufacture_time
+
   dimension  :product,           :field_name=>'product.name'
   dimension  :region,            :field_name=>'plant.address.region'
   
