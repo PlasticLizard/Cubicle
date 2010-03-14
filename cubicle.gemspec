@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nathan Stults"]
-  s.date = %q{2010-03-11}
+  s.date = %q{2010-03-14}
   s.description = %q{Cubicle provides a dsl and aggregation caching framework for automating the generation, execution and caching of map reduce queries when using MongoDB in Ruby. Cubicle also includes a MongoMapper plugin for quickly performing ad-hoc, multi-level group-by queries against a MongoMapper model.}
   s.email = %q{hereiam@sonic.net}
   s.extra_rdoc_files = [
@@ -22,12 +22,13 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "cubicle.gemspec",
-     "lib/analytics_date_time_support.rb",
+     "cubicle.log",
      "lib/cubicle.rb",
      "lib/cubicle/aggregation.rb",
      "lib/cubicle/calculated_measure.rb",
      "lib/cubicle/data.rb",
      "lib/cubicle/data_level.rb",
+     "lib/cubicle/date_time.rb",
      "lib/cubicle/dimension.rb",
      "lib/cubicle/measure.rb",
      "lib/cubicle/member.rb",
@@ -36,35 +37,37 @@ Gem::Specification.new do |s|
      "lib/cubicle/mongo_mapper/aggregate_plugin.rb",
      "lib/cubicle/query.rb",
      "lib/cubicle/ratio.rb",
+     "lib/cubicle/support.rb",
      "lib/cubicle/version.rb",
-     "lib/support.rb",
      "test/config/database.yml",
-     "test/cubicle_aggregation_test.rb",
-     "test/cubicle_data_level_test.rb",
-     "test/cubicle_data_test.rb",
-     "test/cubicle_query_test.rb",
-     "test/cubicle_test.rb",
+     "test/cubicle/cubicle_aggregation_test.rb",
+     "test/cubicle/cubicle_data_level_test.rb",
+     "test/cubicle/cubicle_data_test.rb",
+     "test/cubicle/cubicle_query_test.rb",
+     "test/cubicle/cubicle_test.rb",
+     "test/cubicle/mongo_mapper/aggregate_plugin_test.rb",
      "test/cubicles/defect_cubicle.rb",
      "test/log/test.log",
      "test/models/defect.rb",
-     "test/mongo_mapper/aggregate_plugin_test.rb",
      "test/test_helper.rb"
   ]
   s.homepage = %q{http://github.com/PlasticLizard/cubicle}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.5}
   s.summary = %q{Pseudo-Multi Dimensional analysis / simplified aggregation for MongoDB in Ruby (NOLAP ;))}
   s.test_files = [
-    "test/cubicles/defect_cubicle.rb",
-     "test/cubicle_aggregation_test.rb",
-     "test/cubicle_data_level_test.rb",
-     "test/cubicle_data_test.rb",
-     "test/cubicle_query_test.rb",
-     "test/cubicle_test.rb",
+    "test/cubicle/cubicle_aggregation_test.rb",
+     "test/cubicle/cubicle_data_level_test.rb",
+     "test/cubicle/cubicle_data_test.rb",
+     "test/cubicle/cubicle_query_test.rb",
+     "test/cubicle/cubicle_test.rb",
+     "test/cubicle/mongo_mapper/aggregate_plugin_test.rb",
+     "test/cubicles/defect_cubicle.rb",
      "test/models/defect.rb",
-     "test/mongo_mapper/aggregate_plugin_test.rb",
-     "test/test_helper.rb"
+     "test/test_helper.rb",
+     "examples/cubicles/poker_hand_cubicle.rb",
+     "examples/models/poker_hand.rb"
   ]
 
   if s.respond_to? :specification_version then
@@ -72,9 +75,18 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<activesupport>, [">= 2.3"])
+      s.add_runtime_dependency(%q<mongo>, [">= 0.18.3"])
+      s.add_development_dependency(%q<shoulda>, ["= 2.10.3"])
     else
+      s.add_dependency(%q<activesupport>, [">= 2.3"])
+      s.add_dependency(%q<mongo>, [">= 0.18.3"])
+      s.add_dependency(%q<shoulda>, ["= 2.10.3"])
     end
   else
+    s.add_dependency(%q<activesupport>, [">= 2.3"])
+    s.add_dependency(%q<mongo>, [">= 0.18.3"])
+    s.add_dependency(%q<shoulda>, ["= 2.10.3"])
   end
 end
 
