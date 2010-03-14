@@ -1,6 +1,11 @@
 == Overview
 Cubicle is a Ruby library and DSL for automating the generation, execution and caching of common aggregations of MongoDB documents. Cubicle was born from the need to easily extract simple, processed statistical views of raw, real time business data being collected from a variety of systems.
 
+== Motivation
+Aggregating data in MongoDB, unlike relational or multidimensional (OLAP) database, requires writing custom reduce functions in JavaScript for the simplest cases and full map reduce functions in the more complex cases, even for common aggregations like sums or averages.
+
+While writing such map reduce functions isn't particularly difficult it can be tedious and error prone and requires switching from Ruby to JavaScript. Cubicle presents a simplified Ruby DSL for generating the JavaScript required for most common aggregation tasks and also handles processing, caching and presenting the  results. JavaScript is still required in some cases, but is limited to constructing simple data transformation expressions.
+
 == Install
 
 Install the gem with:
@@ -144,13 +149,9 @@ If MongoMapper is detected, Cubicle will use its connection to MongoDB. Addition
 == Limitations
 * Cubicle cannot currently cause child documents to be emitted in the map reduce. This is a pretty big limitation, and will be resolved shortly.
 * Documentation is non-existent. This is being worked on (head that one before?)
-* Testing coverage is OK, but the tests could be better organized
+* Test coverage is OK, but the tests could be better organized
 * Code needs to be modularized a bit, main classes are a bit hairy at the moment
 
-== Motivation
-Aggregating data in MongoDB, unlike relational or multidimensional (OLAP) database, requires writing custom reduce functions in JavaScript for the simplest cases and full map reduce functions in the more complex cases, even for common aggregations like sums or averages.
-
-While writing such map reduce functions isn't particularly difficult it can be tedious and error prone and requires switching from Ruby to JavaScript. Cubicle presents a simplified Ruby DSL for generating the JavaScript required for most common aggregation tasks and also handles processing, caching and presenting the  results. JavaScript is still required in some cases, but is limited to constructing simple data transformation expressions.
 
 == Credits
 
