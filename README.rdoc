@@ -11,7 +11,7 @@ Install the gem with:
 
 
 == Approach
-Cubicle breaks the task of defining and executing aggregation queries into two pieces. The first is the Cubicle, an analysis friendly 'view” of  the underlying collection which defines both the attributes that will be used for grouping  (dimensions) , the numerical fields that will be aggregated (measures), and  kind of aggregation will be applied to each measure.  The second piece of the Cubicle puzzle is a Query  which specifies which particular dimensions or measures will be selected from the Cubicle for a given data request, along with how the resulting data will be filtered, ordered, paginated and organized.
+Cubicle breaks the task of defining and executing aggregation queries into two pieces. The first is the Cubicle, an analysis friendly 'view' of  the underlying collection which defines both the attributes that will be used for grouping  (dimensions) , the numerical fields that will be aggregated (measures), and  kind of aggregation will be applied to each measure.  The second piece of the Cubicle puzzle is a Query  which specifies which particular dimensions or measures will be selected from the Cubicle for a given data request, along with how the resulting data will be filtered, ordered, paginated and organized.
 
 == An Example
 Given a document with the following structure (I'm using MongoMapper here as the ORM, but MongoMapper, or any other ORM, is not required by Cubicle, it works directly with the Mongo-Ruby Driver)
@@ -21,7 +21,7 @@ Given a document with the following structure (I'm using MongoMapper here as the
 
         key :match_date, String    #we use iso8601 strings for dates, but Time works too
         key :table, String
-        key :winner, Person 	   # {:person=>{:name=>”Jim”, :address=>{...}...}}
+        key :winner, Person 	   # {:person=>{:name=>'Jim', :address=>{...}...}}
         key :winning_hand, Symbol  #:two_of_a_kind, :full_house, etc...
         key :amount_won, Float
     end
