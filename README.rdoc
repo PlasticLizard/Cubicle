@@ -11,7 +11,7 @@ Install the gem with:
 
 
 == Approach
-Cubicle breaks the task of defining and executing aggregation queries into two pieces. The first is the Cubicle, an analysis friendly “view” of  the underlying collection which defines both the attributes that will be used for grouping  (dimensions) , the numerical fields that will be aggregated (measures), and  kind of aggregation will be applied to each measure.  The second piece of the Cubicle puzzle is a Query  which specifies which particular dimensions or measures will be selected from the Cubicle for a given data request, along with how the resulting data will be filtered, ordered, paginated and organized.
+Cubicle breaks the task of defining and executing aggregation queries into two pieces. The first is the Cubicle, an analysis friendly 'view” of  the underlying collection which defines both the attributes that will be used for grouping  (dimensions) , the numerical fields that will be aggregated (measures), and  kind of aggregation will be applied to each measure.  The second piece of the Cubicle puzzle is a Query  which specifies which particular dimensions or measures will be selected from the Cubicle for a given data request, along with how the resulting data will be filtered, ordered, paginated and organized.
 
 == An Example
 Given a document with the following structure (I'm using MongoMapper here as the ORM, but MongoMapper, or any other ORM, is not required by Cubicle, it works directly with the Mongo-Ruby Driver)
@@ -19,9 +19,9 @@ Given a document with the following structure (I'm using MongoMapper here as the
     class PokerHand
         include MongoMapper::Document
 
-        key :match_date, String 	 #we use iso8601 strings for dates, but Time works too
+        key :match_date, String    #we use iso8601 strings for dates, but Time works too
         key :table, String
-        key :winner, Person 	            # {:person=>{:name=>”Jim”, :address=>{...}...}}
+        key :winner, Person 	   # {:person=>{:name=>”Jim”, :address=>{...}...}}
         key :winning_hand, Symbol  #:two_of_a_kind, :full_house, etc...
         key :amount_won, Float
     end
@@ -95,9 +95,9 @@ Flat data:
     [{:dimension1=>'d1', :dimension2=>'d1', :measure1=>'1.0'},{:dimension1=>'d2'...
 
 Hierarchical data 2 levels deep:
-    {“dimension 1'=>{“dimension2'=>[{:measures1=>'1.0'}],'dimension2b'=>[{measure1=>'2.0'}],...
+    {'dimension 1'=>{'dimension2'=>[{:measures1=>'1.0'}],'dimension2b'=>[{measure1=>'2.0'}],...
 
-When you request two dimensional data (i.e. you do not use the “by' keyword) you can transform your two dimensional data set into hierarchical data at any time using the “hierarchize' method, specifying the dimensions you want to use in your hierarchy:
+When you request two dimensional data (i.e. you do not use the 'by' keyword) you can transform your two dimensional data set into hierarchical data at any time using the 'hierarchize' method, specifying the dimensions you want to use in your hierarchy:
 
     data = MyCubicle.query {select :date, :name, :all_measures}
     hierarchized_data = data.hierarchize :name, :date
@@ -113,9 +113,9 @@ The expected normal mode of operation, however, is cached mode. While far from a
         extend Cubicle
         dimension :name
         dimension :date
-        …
+        ...
         avg :my_measure
-        …
+        ...
         aggregate :name, :date
         aggregate :name
         aggregate :date
@@ -124,7 +124,7 @@ The expected normal mode of operation, however, is cached mode. While far from a
 When aggregations are specified in this way, then Cubicle will pre-aggregate your data for each of the specified combinations of dimensions whenever MyCubicle.process is called, eliminating the first-hit penalty that would otherwise be incurred when Cubicle encountered a given aggregation for the first time.
 
 == Transient (Real Time) Queries
-Sometimes you may not want to query cached data. In our application, we are using Cubicle to provide data for our performance management Key Performance Indicators (KPI's) which consist of both a historical trend of a particular metric as well as the current, real time value of the same metric for, say, the current month or a rolling 30 day period. For performance reasons, we fetch our trend, which is usually 12 months, from cached data but want up to the minute freshness for our real time KPI values, so we need to query the living source data. To accomplish this using Cubicle, you simply insert “transient!' into your query definition, like so
+Sometimes you may not want to query cached data. In our application, we are using Cubicle to provide data for our performance management Key Performance Indicators (KPI's) which consist of both a historical trend of a particular metric as well as the current, real time value of the same metric for, say, the current month or a rolling 30 day period. For performance reasons, we fetch our trend, which is usually 12 months, from cached data but want up to the minute freshness for our real time KPI values, so we need to query the living source data. To accomplish this using Cubicle, you simply insert 'transient!' into your query definition, like so
 
     MyCubicle.query do
         transient!
