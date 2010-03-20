@@ -9,7 +9,7 @@ module Cubicle
 
     def initialize(*args)
       opts = args.extract_options!
-      @name = args.shift.to_sym
+      @name = args.shift.to_sym if args[0].is_a?(String) or args[0].is_a?(Symbol)
 
       self.options = (opts || {}).symbolize_keys
 
@@ -28,6 +28,11 @@ module Cubicle
         @alias_list = member_alias.map{|a|a.to_s}
       end
 
+    end
+
+    def options(*args)
+      return @options if args.empty?
+      args.collect {|opt|found=@options.delete(opt)}.pop
     end
 
     def matches(member_name)

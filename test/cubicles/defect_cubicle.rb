@@ -9,9 +9,9 @@ class DefectCubicle
 
   dimension  :product,           :field_name=>'product.name'
   dimension  :region,            :field_name=>'plant.address.region'
-  
+
   dimensions :operator, :outcome
-  
+
   count :total_defects,          :field_name=>'defect_id'
   count :preventable_defects,    :expression=>'this.root_cause != "act_of_god"'
   sum   :total_cost,             :field_name=>'cost'
@@ -19,6 +19,12 @@ class DefectCubicle
 
   #calculated fields
   ratio :preventable_pct,  :preventable_defects, :total_defects
+
+  #durations
+  average_duration :ms1 => :ms2
+  total_duration :ms2 => :ms3
+  duration :total_duration, :ms1 => :ms3, :in=>:days
+  duration :conditional_duration, :ms1 => :ms3, :in=>:days, :condition=>"this.defect_id != 2"
 
   #pre-cached aggregations
   aggregation :month, :year, :product
