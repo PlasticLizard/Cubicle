@@ -304,6 +304,35 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal 0.43, @results[0]["total_cost"]
       end
     end
+    context "when requesting an exclusive date range" do
+      setup do
+        Time.now = "2010-01-30"
+        @results = DefectCubicle.query do
+          select :month, :all_measures
+          for_the_last_complete 12.months
+          by :month
+        end
+      end
+      should "provide an entry for each month, even months without data" do
+        assert_equal [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0], @results.flatten(:total_defects)
+        assert_equal "2009-01", @results.keys[0]
+        assert_equal "2009-12", @results.keys[-1]
+      end
+    end
+    context "when requesting a date range with no results" do
+      setup do
+        Time.now = "2020-01-01"
+        @results = DefectCubicle.query do
+          select :month, :all_measures
+          for_the_last_complete 12.months
+          by :month
+        end
+      end
+      should "provide an empty entry for each month" do
+        assert_equal 12, @results.count
+        assert_equal [0,0,0,0,0,0,0,0,0,0,0,0], @results.flatten(:total_defects)
+      end
+    end
     context "Date filters against native Time types" do
       setup do
         Time.now = "2010-01-30"

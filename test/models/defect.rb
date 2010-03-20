@@ -19,6 +19,37 @@ class Defect
     self.collection.insert(attributes)
   end
 
+  def self.create_duration_test_data
+    time = "1/1/2000".to_time
+    t1,t2,t3 = time,time.advance(:days=>1),time.advance(:days=>3)
+    Defect.create :defect_id=>"1",
+                  :manufacture_date=>"2010-01-01",
+                  :manufacture_time=>"2010-01-01".to_time,
+                  :product=>{:name=>"Sad Day Moonshine",:category=>"Alcohol"},
+                  :plant=>{:name=>"Plant1",:address=>{:region=>"West",:location=>"San Francisco, Ca"}},
+                  :operator=>"a",
+                  :outcome=>"Repaired",
+                  :cost=>0.78,
+                  :root_cause=>:act_of_god,
+                  :ms1=>t1,
+                  :ms2=>t2,
+                  :ms3=>t3
+
+    t1,t2,t3 = time, time.advance(:days=>2),time.advance(:days=>4)
+    Defect.create :defect_id=>"2",
+                  :manufacture_date=>"2010-01-01",
+                  :manufacture_time=>"2010-01-01".to_time,
+                  :product=>{:name=>"Sad Day Moonshine",:category=>"Alcohol"},
+                  :plant=>{:name=>"Plant1",:address=>{:region=>"West",:location=>"San Francisco, Ca"}},
+                  :operator=>"b",
+                  :outcome=>"Repaired",
+                  :cost=>0.78,
+                  :root_cause=>:act_of_god,
+                  :ms1=>t1,
+                  :ms2=>t2,
+                  :ms3=>t3
+  end
+
   def self.create_test_data
     Defect.create :defect_id=>"1",
                   :manufacture_date=>"2010-01-01",

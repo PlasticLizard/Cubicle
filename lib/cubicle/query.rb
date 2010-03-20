@@ -118,17 +118,17 @@ module Cubicle
       return if @time_dimension #If a time dimension has been explicitly specified, the following isn't helpful.
 
       #Now let's see if we can find ourselves a time dimension
-#      if (@cubicle.time_dimension && time_dimension.included_in?(args))
-#        time_dimension(@cubicle.time_dimension)
-#      else
-#        args.each do |by_member|
-#          if (detected = detect_time_period by_member)
-#            time_dimension by_member
-#            @time_period = detected
-#            break
-#          end
-#        end
-#      end
+      if (@cubicle.time_dimension && time_dimension.included_in?(args))
+        time_dimension(@cubicle.time_dimension)
+      else
+        args.each do |by_member|
+          if (detected = detect_time_period by_member)
+            time_dimension by_member
+            @time_period = detected
+            break
+          end
+        end
+      end
     end
 
     def order_by(*args)
@@ -140,7 +140,11 @@ module Cubicle
 
     def time_range(date_range = nil)
       return nil unless date_range || @from_date || @to_date
-      return ((@from_date || Time.now)..(@to_date || Time.now)) unless date_range
+      unless date_range
+        start,stop = @from_date || Time.now, @to_date || Time.now
+        return @to_date_filter=="$lte" ? start..stop : start...stop       
+      end
+
       @to_date_filter = date_range.exclude_end? ? "$lt" : "$lte"
       @from_date, @to_date = date_range.first, date_range.last if date_range
     end

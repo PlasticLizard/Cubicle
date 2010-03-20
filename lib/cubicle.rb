@@ -11,6 +11,7 @@ dir = File.dirname(__FILE__)
  "calculated_measure",
  "dimension",
  "ratio",
+ "duration",
  "query",
  "data_level",
  "data",
@@ -124,6 +125,22 @@ module Cubicle
     measure(*(args << options))
   end
 
+  def duration(*args)
+    measures << (dur = Duration.new(*args))
+    count("#{dur.name}_count".to_sym, :expression=>dur.expression) if dur.aggregation_method == :average 
+  end
+
+  def average_duration(*args)
+    duration(*args)
+  end
+  alias avg_duration average_duration
+
+  def total_duration(*args)
+    options = args.extract_options!
+    options[:aggregation_method] = :sum
+    duration(*(args<<options))
+  end
+
   def ratio(member_name, numerator, denominator)
     measures << Ratio.new(member_name, numerator, denominator)
   end
@@ -157,6 +174,7 @@ module Cubicle
     query.select_all unless query.selected?
     return query if options[:defer]
     results = execute_query(query,options)
+    #return results if results.blank?
     #If the 'by' clause was used in the the query,
     #we'll hierarchize by the members indicated,
     #as the next step would otherwise almost certainly
@@ -164,6 +182,7 @@ module Cubicle
     query.respond_to?(:by) && query.by.length > 0 ? results.hierarchize(*query.by) : results
   end
 
+  #noinspection RubyArgCount
   def execute_query(query,options={})
     count = 0
 
@@ -187,12 +206,16 @@ module Cubicle
         aggregation = aggregate(query,:source_collection=>collection.name)
       end
     end
-    count = aggregation.count
-    #noinspection RubyArgCount
-    data = aggregation.find(filter,find_options).to_a
-    #noinspection RubyArgCount
-    aggregation.drop if aggregation.name =~ /^tmp.mr.*/
-    Cubicle::Data.new(query, data, count)
+
+    if aggregation.blank?
+      Cubicle::Data.new(query,[],0) if aggregation == []
+    else
+      count = aggregation.count
+      results = aggregation.find(filter,find_options).to_a
+      aggregation.drop if aggregation.name =~ /^tmp.mr.*/
+      Cubicle::Data.new(query, results, count)
+    end
+
   end
 
   def process(options={})
@@ -361,7 +384,7 @@ MAP
 	var output = {};
 	values.forEach(function(doc){
         for(var key in doc){
-			if (doc[key] != null){
+			if (doc[key] || doc[key] == 0){
 				output[key] = output[key] || 0;
 				output[key]  += doc[key];
 			}
