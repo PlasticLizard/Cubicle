@@ -267,10 +267,11 @@ module Cubicle
   end
 
   def ensure_indexes(collection_name,dimension_names)
+    col = database[collection_name]
     #an index for each dimension
-    dimension_names.each {|dim|database[collection_name].create_index([dim,Mongo::ASCENDING])}
+    dimension_names.each {|dim|col.create_index([dim,Mongo::ASCENDING])}
     #and a composite
-    database[collection_name].create_index(dimension_names)
+    col.create_index(dimension_names)
   end
 
   def aggregate(query,options={})
