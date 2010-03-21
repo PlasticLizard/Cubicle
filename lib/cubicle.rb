@@ -126,8 +126,11 @@ module Cubicle
   end
 
   def duration(*args)
+    options = args.extract_options!
+    options[:in] ||= durations_in
+    args << options
     measures << (dur = Duration.new(*args))
-    count("#{dur.name}_count".to_sym, :expression=>dur.expression) if dur.aggregation_method == :average 
+    count("#{dur.name}_count".to_sym, :expression=>dur.expression) if dur.aggregation_method == :average
   end
 
   def average_duration(*args)
@@ -140,6 +143,13 @@ module Cubicle
     options[:aggregation_method] = :sum
     duration(*(args<<options))
   end
+
+  def durations_in(unit_of_time = nil)
+    return (@duration_unit ||= :seconds) unless unit_of_time
+    @duration_unit = unit_of_time.to_s.pluralize.to_sym
+  end
+  alias :duration_unit :durations_in
+
 
   def ratio(member_name, numerator, denominator)
     measures << Ratio.new(member_name, numerator, denominator)
