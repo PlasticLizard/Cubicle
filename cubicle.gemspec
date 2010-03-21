@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cubicle}
-  s.version = "0.1.2"
+  s.version = "0.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nathan Stults"]
-  s.date = %q{2010-03-20}
+  s.date = %q{2010-03-21}
   s.description = %q{Cubicle provides a dsl and aggregation caching framework for automating the generation, execution and caching of map reduce queries when using MongoDB in Ruby. Cubicle also includes a MongoMapper plugin for quickly performing ad-hoc, multi-level group-by queries against a MongoMapper model.}
   s.email = %q{hereiam@sonic.net}
   s.extra_rdoc_files = [
@@ -24,7 +24,11 @@ Gem::Specification.new do |s|
      "cubicle.gemspec",
      "cubicle.log",
      "lib/cubicle.rb",
-     "lib/cubicle/ad_hoc.rb",
+     "lib/cubicle/aggregation.rb",
+     "lib/cubicle/aggregation/ad_hoc.rb",
+     "lib/cubicle/aggregation/aggregation_manager.rb",
+     "lib/cubicle/aggregation/dsl.rb",
+     "lib/cubicle/aggregation/map_reduce_helper.rb",
      "lib/cubicle/calculated_measure.rb",
      "lib/cubicle/data.rb",
      "lib/cubicle/data_level.rb",
@@ -37,15 +41,17 @@ Gem::Specification.new do |s|
      "lib/cubicle/mongo_environment.rb",
      "lib/cubicle/mongo_mapper/aggregate_plugin.rb",
      "lib/cubicle/query.rb",
+     "lib/cubicle/query/dsl.rb",
+     "lib/cubicle/query/dsl/time_intelligence.rb",
      "lib/cubicle/ratio.rb",
      "lib/cubicle/support.rb",
      "lib/cubicle/version.rb",
      "test/config/database.yml",
-     "test/cubicle/ad_hoc_test.rb",
+     "test/cubicle/aggregation/ad_hoc_test.rb",
+     "test/cubicle/cubicle_aggregation_test.rb",
      "test/cubicle/cubicle_data_level_test.rb",
      "test/cubicle/cubicle_data_test.rb",
      "test/cubicle/cubicle_query_test.rb",
-     "test/cubicle/cubicle_test.rb",
      "test/cubicle/duration_test.rb",
      "test/cubicle/mongo_mapper/aggregate_plugin_test.rb",
      "test/cubicles/defect_cubicle.rb",
@@ -59,11 +65,11 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{Pseudo-Multi Dimensional analysis / simplified aggregation for MongoDB in Ruby (NOLAP ;))}
   s.test_files = [
-    "test/cubicle/ad_hoc_test.rb",
+    "test/cubicle/aggregation/ad_hoc_test.rb",
+     "test/cubicle/cubicle_aggregation_test.rb",
      "test/cubicle/cubicle_data_level_test.rb",
      "test/cubicle/cubicle_data_test.rb",
      "test/cubicle/cubicle_query_test.rb",
-     "test/cubicle/cubicle_test.rb",
      "test/cubicle/duration_test.rb",
      "test/cubicle/mongo_mapper/aggregate_plugin_test.rb",
      "test/cubicles/defect_cubicle.rb",
