@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
      "cubicle.gemspec",
      "cubicle.log",
      "lib/cubicle.rb",
-     "lib/cubicle/aggregation.rb",
+     "lib/cubicle/ad_hoc.rb",
      "lib/cubicle/calculated_measure.rb",
      "lib/cubicle/data.rb",
      "lib/cubicle/data_level.rb",
@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
      "lib/cubicle/support.rb",
      "lib/cubicle/version.rb",
      "test/config/database.yml",
-     "test/cubicle/cubicle_aggregation_test.rb",
+     "test/cubicle/ad_hoc_test.rb",
      "test/cubicle/cubicle_data_level_test.rb",
      "test/cubicle/cubicle_data_test.rb",
      "test/cubicle/cubicle_query_test.rb",
@@ -59,7 +59,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{Pseudo-Multi Dimensional analysis / simplified aggregation for MongoDB in Ruby (NOLAP ;))}
   s.test_files = [
-    "test/cubicle/cubicle_aggregation_test.rb",
+    "test/cubicle/ad_hoc_test.rb",
      "test/cubicle/cubicle_data_level_test.rb",
      "test/cubicle/cubicle_data_test.rb",
      "test/cubicle/cubicle_query_test.rb",

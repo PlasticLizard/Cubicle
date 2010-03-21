@@ -7,7 +7,7 @@ class CubicleDataTest  < ActiveSupport::TestCase
                      {"_id"=>{"company_id"=>'c1', "month"=>"2009-11"}, "value"=>{"requests"=>1.0, "controllable_declines"=>1.0}},
                      {"_id"=>{"company_id"=>'c1', "month"=>"2010-01"}, "value"=>{"requests"=>2.0, "transports"=>2.0}}]
       @query = Class.new do
-        extend Cubicle
+        extend Cubicle::Aggregation
         dimensions :company_id, :month
         measures :requests, :transports, :controllable_declines
       end

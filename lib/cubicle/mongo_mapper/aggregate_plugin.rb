@@ -3,7 +3,7 @@ module Cubicle
     module AggregatePlugin
       module ClassMethods
         def aggregate(&block)
-          return Cubicle::Aggregation.new(self.collection_name,&block)
+          return Cubicle::Aggregation::AdHoc.new(self.collection_name,&block)
         end
       end
 

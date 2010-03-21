@@ -1,5 +1,5 @@
 class DefectCubicle
-  extend Cubicle
+  extend Cubicle::Aggregation
 
   date       :manufacture_date,  :field_name=>'manufacture_date', :alias=>:date
   dimension  :month,             :expression=>'this.manufacture_date.substring(0,7)'

@@ -1,14 +1,14 @@
 module Cubicle
   class Query
 
-    attr_reader  :time_period, :transient
+    attr_reader  :time_period, :transient, :aggregation
     attr_accessor :source_collection_name
-    def initialize(cubicle)
-      @cubicle = cubicle
+    def initialize(aggregation)
+      @aggregation = aggregation
 
       @dimensions = Cubicle::MemberList.new
       @measures = Cubicle::MemberList.new
-      @source_collection_name = @cubicle.target_collection_name
+      @source_collection_name = @aggregation.target_collection_name
       @where, @from_date, @to_date, @date_dimension, @time_period, @limit, @offset = nil
       @all_dimensions, @all_measures = false, false
       @transient = false
@@ -34,7 +34,7 @@ module Cubicle
     end
 
     def transient?
-      @transient || @cubicle.transient?
+      @transient || @aggregation.transient?
     end
 
     def transient!
@@ -81,9 +81,9 @@ module Cubicle
         #which is useful for ensuring certain members are selected
         #even though the user may already have selected them previously
         args.each do |member_name|
-          if (member = @cubicle.dimensions[member_name])
+          if (member = @aggregation.dimensions[member_name])
             @dimensions << convert_dimension(member)
-          elsif (member = @cubicle.measures[member_name])
+          elsif (member = @aggregation.measures[member_name])
             @measures << convert_measure(member)
           end
           found << member_name if member || selected?(member_name)
@@ -112,14 +112,13 @@ module Cubicle
 
       #We'll need these in the result set
       select *args
-
       #replace any alias names with actual member names
-      @by = args.map{|member_name|@cubicle.find_member(member_name).name}
+      @by = args.map{|member_name|@aggregation.find_member(member_name).name}
       return if @time_dimension #If a time dimension has been explicitly specified, the following isn't helpful.
 
       #Now let's see if we can find ourselves a time dimension
-      if (@cubicle.time_dimension && time_dimension.included_in?(args))
-        time_dimension(@cubicle.time_dimension)
+      if (@aggregation.time_dimension && time_dimension.included_in?(args))
+        time_dimension(@aggregation.time_dimension)
       else
         args.each do |by_member|
           if (detected = detect_time_period by_member)
@@ -150,8 +149,8 @@ module Cubicle
     end
 
     def time_dimension(dimension = nil)
-      return (@time_dimension ||= @cubicle.time_dimension) unless dimension
-      @time_dimension = dimension.is_a?(Cubicle::Dimension) ? dimension : @cubicle.dimensions[dimension]
+      return (@time_dimension ||= @aggregation.time_dimension) unless dimension
+      @time_dimension = dimension.is_a?(Cubicle::Dimension) ? dimension : @aggregation.dimensions[dimension]
       raise "No dimension matching the name #{dimension} could be found in the underlying data source" unless @time_dimension
       #select @time_dimension unless selected?(dimension)
     end
@@ -236,16 +235,16 @@ module Cubicle
 
     def dimensions
       return @dimensions unless all_dimensions?
-      @cubicle.dimensions.collect{|dim|convert_dimension(dim)}
+      @aggregation.dimensions.collect{|dim|convert_dimension(dim)}
     end
 
     def measures
       return @measures unless all_measures?
-      @cubicle.measures.collect{|measure|convert_measure(measure)}
+      @aggregation.measures.collect{|measure|convert_measure(measure)}
     end
 
     def execute(options={})
-      @cubicle.execute_query(self,options)
+      @aggregation.aggregator.execute_query(self,options)
     end
 
     private

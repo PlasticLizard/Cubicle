@@ -32,11 +32,11 @@ Given a document with the following structure (I'm using MongoMapper here as the
         key :amount_won, Float
     end
 
-== The Cubicle
+== The Aggregation
 here's how a Cubicle designed to analyze these poker hands might look:
 
     class PokerHandCubicle
-        extend Cubicle
+        extend Cubicle::Aggregation
 
         date       :date,      :field_name=>'match_date'
         dimension  :month,     :expression=>'this.match_date.substring(0,7)'
@@ -98,7 +98,7 @@ or
 == Durations
 In addition to the basic aggregations, Cubicle can also calculate durations based on timestamps. Currently, Cubicle is limited to calculating durations for data types actually stored as times (i.e. it won't automatically emit javascript to parse string or iso8601 representations of time), but this will change in the future. Cubicle can calculate average or total durations between timestamps, in either seconds, minutes, hours or days. Durations can also be given conditions (which are javascript expressions) which act to filter which documents are included in the duration calculation. By default, Cubicle will calculate an average of the duration between timestamps. To request Cubicle to calculate a sum instead, use 'total_duration'. If you are the like everything as exlicit as possible type, duration is aliased as 'average_duration'
     class SomeBusinessProcess
-        extend Cubicle
+        extend Cubicle::Aggregation
 
         dimension        :some_dimension
 
@@ -131,7 +131,7 @@ Map reduce operations, especially over large or very large data sets, can take t
 == Preprocessed Aggregations
 The expected normal mode of operation, however, is cached mode. While far from anything actually resembling an OLAP cube, Cubicle was designed to to process data on some periodic schedule and provide quick access to stored, aggregated data in between each processing, much like a real OLAP cube. Also reminiscent of an OLAP cube, Cubicle will cache aggregations at various levels of resolution, depending on the aggregations that were set up when defining a cubicle and depending on what queries are executed. For example, if a given Cubicle has three dimensions, Name, City and Date, when the Cubicle is processed, it will calculated aggregated measures for each combination of values on those three fields. If a query is executed that only requires Name and Date, then Cubicle will aggregate and cache measures by just Name and Date. If a third query asks for just Name, then Cubicle will create an aggregation based just on Name, but rather than using the original data source with its many rows, it will execute its map reduce against the previously cached Name-Date aggregation, which by definition will have fewer rows and should therefore perform faster. If you are aware ahead of time the aggregations your queries will need, you can specify them in the Cubicle definition, like this
     class MyCubicle
-        extend Cubicle
+        extend Cubicle::Aggregation
         dimension :name
         dimension :date
         ...
@@ -166,7 +166,7 @@ If MongoMapper is detected, Cubicle will use its connection to MongoDB. Addition
 * Cubicle cannot currently cause child documents to be emitted in the map reduce. This is a pretty big limitation, and will be resolved shortly.
 * Documentation is non-existent. This is being worked on (head that one before?)
 * Test coverage is OK, but the tests could be better organized
-* Code needs to be modularized a bit, main classes are a bit hairy at the moment
+* Code needs to be modularized a bit, main classes are pretty hairy at the moment
 
 
 == Credits
