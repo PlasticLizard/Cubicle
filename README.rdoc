@@ -95,6 +95,20 @@ or
         order_by [:total_winnings, :desc]
     end
 
+== Durations
+In addition to the basic aggregations, Cubicle can also calculate durations based on timestamps. Currently, Cubicle is limited to calculating durations for data types actually stored as times (i.e. it won't automatically emit javascript to parse string or iso8601 representations of time), but this will change in the future. Cubicle can calculate average or total durations between timestamps, in either seconds, minutes, hours or days. Durations can also be given conditions (which are javascript expressions) which act to filter which documents are included in the duration calculation. By default, Cubicle will calculate an average of the duration between timestamps. To request Cubicle to calculate a sum instead, use 'total_duration'. If you are the like everything as exlicit as possible type, duration is aliased as 'average_duration'
+    class SomeBusinessProcess
+        extend Cubicle
+
+        dimension        :some_dimension
+
+        average          :some_measure
+        duration         :timestamp1 => :timestamp2
+        duration         :timestamp2 => :timestamp3
+        average_duration :timestamp1 => :timestamp3, :in=>:days
+        total_duration   :happy_times, :timestamp1 => :timestamp3, :condition=>"this.mood == 'happy'"
+    end
+    
 == The Results
 Cubicle data is returned as either an array of hashes, for a two dimensional query, or a hash-based tree the leaves of which are arrays of hashes for hierarchical data (via queries using the 'by' keyword)
 
