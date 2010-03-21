@@ -185,5 +185,5 @@ Please report them {on github}[http://github.com/plasticlizard/cubicle/issues].
 * Member format strings
 * Auto gen of a cubicle definition based on existing keys/key types in the MongoMapper plugin
 * DSL support for topcount and bottomcount queries
-* Support for 'duration' aggregation that will calculated durations between timestamps
+* Support for parsing string based times for duration calculations, particularly iso8601 strings
 * Metadata collection to track when cubicles have been processed, perhaps how big they are, how many aggregations, etc.

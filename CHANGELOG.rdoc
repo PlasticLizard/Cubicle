@@ -1,2 +1,9 @@
+== 0.1.2
+* Added ability to calculate durations between two timestamps
+* Bug fixes
+
+== 0.1.1
+* Fixed a bug that required a logger to be initialized for the thing to work
+
 == 0.1.0
 * Initial release
