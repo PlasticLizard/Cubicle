@@ -1,8 +1,10 @@
 module Cubicle
   class Query
+    include Dsl
 
     attr_reader  :time_period, :transient, :aggregation
     attr_accessor :source_collection_name
+    
     def initialize(aggregation)
       @aggregation = aggregation
 
@@ -22,10 +24,6 @@ module Cubicle
       Marshal.load(Marshal.dump(self))
     end
 
-    def select_all
-      select :all_dimensions, :all_measures
-    end
-
     def selected?(member = nil)
       return (@dimensions.length > 0 || @measures.length > 0) unless member
       member_name = member.kind_of?(Cubicle::Member) ? member.name : member.to_s
@@ -37,10 +35,6 @@ module Cubicle
       @transient || @aggregation.transient?
     end
 
-    def transient!
-      @transient = true
-      @source_collection_name = nil
-    end
 
     def all_measures?
       @all_measures
@@ -48,182 +42,7 @@ module Cubicle
 
     def all_dimensions?
       @all_dimensions
-    end
-
-    def select(*args)
-      args = args[0] if args[0].is_a?(Array)
-
-      if (args.include?(:all))
-        select_all
-        return
-      end
-
-      if (args.include?(:all_measures))
-        @all_measures = true
-        @measures = Cubicle::MemberList.new
-      end
-      if (args.include?(:all_dimensions))
-        @all_dimensions = true
-        @dimensions = Cubicle::MemberList.new
-      end
-
-      return if args.length == 1 && selected?(args[0])
-
-      found=[:all_measures,:all_dimensions]
-
-      if args.length == 1 && !all_dimensions? && args[0].is_a?(Cubicle::Dimension)
-        @dimensions << convert_dimension(args.pop)
-      elsif args.length == 1 && !all_measures? && args[0].is_a?(Cubicle::Measure)
-        @measures << convert_measure(args.pop)
-      else
-        #remove from the list any dimensions or measures that are already
-        #selected. This allows select to be idempotent,
-        #which is useful for ensuring certain members are selected
-        #even though the user may already have selected them previously
-        args.each do |member_name|
-          if (member = @aggregation.dimensions[member_name])
-            @dimensions << convert_dimension(member)
-          elsif (member = @aggregation.measures[member_name])
-            @measures << convert_measure(member)
-          end
-          found << member_name if member || selected?(member_name)
-        end
-      end
-      args = args - found
-      raise "You selected one or more members that do not exist in the underlying data source:#{args.inspect}" unless args.blank?
-      self
-    end
-
-    def limit(in_limit = nil)
-      return @limit unless in_limit
-      @limit = in_limit
-      return self
-    end
-
-    def offset(in_offset = nil)
-      return @offset unless in_offset
-      @offset = in_offset
-      return self
-    end
-    alias skip offset
-
-    def by(*args)
-      return @by unless args.length > 0
-
-      #We'll need these in the result set
-      select *args
-      #replace any alias names with actual member names
-      @by = args.map{|member_name|@aggregation.find_member(member_name).name}
-      return if @time_dimension #If a time dimension has been explicitly specified, the following isn't helpful.
-
-      #Now let's see if we can find ourselves a time dimension
-      if (@aggregation.time_dimension && time_dimension.included_in?(args))
-        time_dimension(@aggregation.time_dimension)
-      else
-        args.each do |by_member|
-          if (detected = detect_time_period by_member)
-            time_dimension by_member
-            @time_period = detected
-            break
-          end
-        end
-      end
-    end
-
-    def order_by(*args)
-      return @order_by unless args.length > 0
-      args.each do |order|
-        @order_by << (order.is_a?(Array) ? order : [order,:asc])
-      end
-    end
-
-    def time_range(date_range = nil)
-      return nil unless date_range || @from_date || @to_date
-      unless date_range
-        start,stop = @from_date || Time.now, @to_date || Time.now
-        return @to_date_filter=="$lte" ? start..stop : start...stop       
-      end
-
-      @to_date_filter = date_range.exclude_end? ? "$lt" : "$lte"
-      @from_date, @to_date = date_range.first, date_range.last if date_range
-    end
-
-    def time_dimension(dimension = nil)
-      return (@time_dimension ||= @aggregation.time_dimension) unless dimension
-      @time_dimension = dimension.is_a?(Cubicle::Dimension) ? dimension : @aggregation.dimensions[dimension]
-      raise "No dimension matching the name #{dimension} could be found in the underlying data source" unless @time_dimension
-      #select @time_dimension unless selected?(dimension)
-    end
-    alias date_dimension time_dimension
-
-    def last(duration,as_of = Time.now)
-      duration = 1.send(duration) if [:year,:month,:week,:day].include?(duration)
-      period = duration.parts[0][0]
-      @from_date = duration.ago(as_of).advance(period=>1)
-      @to_date = as_of
-    end
-    alias for_the_last last
-
-    def last_complete(duration,as_of = Time.now)
-      duration = 1.send(duration) if [:year,:month,:week,:day].include?(duration)
-      period = duration.parts[0][0]
-      @to_date = as_of.beginning_of(period)
-      @from_date = duration.ago(@to_date)
-      @to_date_filter = "$lt"
-    end
-    alias for_the_last_complete last_complete
-
-    def next(duration,as_of = Time.now)
-      duration = 1.send(duration) if [:year,:month,:week,:day].include?(duration)
-      period = duration.parts[0][0]
-      @to_date = duration.from_now(as_of).advance(period=>-1)
-      @from_date = as_of
-    end
-    alias for_the_next next
-
-    def this(period,as_of = Time.now)
-      @from_date = as_of.beginning_of(period)
-      @to_date = as_of
-      self
-    end
-
-    def from(time = nil)
-      return @from_date unless time
-      @from_date = if time.is_a?(Symbol)
-        Time.send(time) if Time.respond_to?(time)
-        Date.send(time).to_time if Date.respond_to?(time)
-      else
-        time.to_time
-      end
-      self
-    end
-
-    def until(time = nil)
-      return @to_date unless time
-      @to_date = if time.is_a?(Symbol)
-        Time.send(time) if Time.respond_to?(time)
-        Date.send(time).to_time if Date.respond_to?(time)
-      else
-        time.to_time
-      end
-      self
-    end
-
-    def ytd(as_of = Time.now)
-      this :year, as_of
-    end
-    alias year_to_date ytd
-
-    def mtd(as_of = Time.now)
-      this :month, as_of
-    end
-    alias month_to_date mtd
-
-    def where(filter = nil)
-      return prepare_filter unless filter
-      (@where ||= {}).merge!(filter)
-      self
-    end
+    end  
 
     def dimension_names
       return dimensions.map{|dim|dim.name.to_s}
@@ -244,7 +63,7 @@ module Cubicle
     end
 
     def execute(options={})
-      @aggregation.aggregator.execute_query(self,options)
+      @aggregation.execute_query(self,options)
     end
 
     private

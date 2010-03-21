@@ -12,6 +12,8 @@ dir = File.dirname(__FILE__)
  "dimension",
  "ratio",
  "duration",
+ "query/dsl/time_intelligence",
+ "query/dsl",
  "query",
  "data_level",
  "data",

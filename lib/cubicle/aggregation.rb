@@ -33,7 +33,7 @@ module Cubicle
     def find_member(member_name)
       @dimensions[member_name] ||
               @measures[member_name]
-    end
+    end    
 
     def query(*args,&block)
         options = args.extract_options!
@@ -45,13 +45,17 @@ module Cubicle
         end
         query.select_all unless query.selected?
         return query if options[:defer]
-        results = aggregator.execute_query(query,options)
+        results = execute_query(query,options)
         #return results if results.blank?
         #If the 'by' clause was used in the the query,
         #we'll hierarchize by the members indicated,
         #as the next step would otherwise almost certainly
         #need to be a call to hierarchize anyway.
         query.respond_to?(:by) && query.by.length > 0 ? results.hierarchize(*query.by) : results
-      end
+    end
+
+    def execute_query(query,options)
+      aggregator.execute_query(query,options)
+    end
   end
 end
