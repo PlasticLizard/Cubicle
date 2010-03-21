@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nathan Stults"]
-  s.date = %q{2010-03-18}
+  s.date = %q{2010-03-20}
   s.description = %q{Cubicle provides a dsl and aggregation caching framework for automating the generation, execution and caching of map reduce queries when using MongoDB in Ruby. Cubicle also includes a MongoMapper plugin for quickly performing ad-hoc, multi-level group-by queries against a MongoMapper model.}
   s.email = %q{hereiam@sonic.net}
   s.extra_rdoc_files = [
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
      "lib/cubicle/data_level.rb",
      "lib/cubicle/date_time.rb",
      "lib/cubicle/dimension.rb",
+     "lib/cubicle/duration.rb",
      "lib/cubicle/measure.rb",
      "lib/cubicle/member.rb",
      "lib/cubicle/member_list.rb",
@@ -45,6 +46,7 @@ Gem::Specification.new do |s|
      "test/cubicle/cubicle_data_test.rb",
      "test/cubicle/cubicle_query_test.rb",
      "test/cubicle/cubicle_test.rb",
+     "test/cubicle/duration_test.rb",
      "test/cubicle/mongo_mapper/aggregate_plugin_test.rb",
      "test/cubicles/defect_cubicle.rb",
      "test/log/test.log",
@@ -62,6 +64,7 @@ Gem::Specification.new do |s|
      "test/cubicle/cubicle_data_test.rb",
      "test/cubicle/cubicle_query_test.rb",
      "test/cubicle/cubicle_test.rb",
+     "test/cubicle/duration_test.rb",
      "test/cubicle/mongo_mapper/aggregate_plugin_test.rb",
      "test/cubicles/defect_cubicle.rb",
      "test/models/defect.rb",
