@@ -15,8 +15,8 @@ module Cubicle
 
         def time_dimension(dimension = nil)
           return (@time_dimension ||= @aggregation.time_dimension) unless dimension
-          @time_dimension = dimension.is_a?(Cubicle::Dimension) ? dimension : @aggregation.dimensions[dimension]
-          raise "No dimension matching the name #{dimension} could be found in the underlying data source" unless @time_dimension
+          @time_dimension = dimension.is_a?(Cubicle::Dimension) ? dimension : @aggregation.dimensions[unalias(dimension)]
+          raise "No dimension matching the name #{unalias(dimension)} could be found in the underlying data source" unless @time_dimension
           #select @time_dimension unless selected?(dimension)
         end
         alias date_dimension time_dimension

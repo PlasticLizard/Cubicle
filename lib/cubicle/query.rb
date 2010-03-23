@@ -18,6 +18,7 @@ module Cubicle
       @order_by=[]
       @from_date_filter = "$gte"
       @to_date_filter = "$lte"
+      @query_aliases=HashWithIndifferentAccess.new
     end
 
     def clone
@@ -26,7 +27,7 @@ module Cubicle
 
     def selected?(member = nil)
       return (@dimensions.length > 0 || @measures.length > 0) unless member
-      member_name = member.kind_of?(Cubicle::Member) ? member.name : member.to_s
+      member_name = member.kind_of?(Cubicle::Member) ? member.name : unalias(member.to_s)
       return @dimensions[member_name] ||
               @measures[member_name]
     end
@@ -131,6 +132,14 @@ module Cubicle
         expression = "#{expression}*#{count_field}"
       end
       Cubicle::Measure.new(measure.name, :expression=>expression,:aggregation_method=>aggregation)
+    end
+
+    def unalias(*name_or_names)
+      return (@query_aliases[name_or_names[0]] || name_or_names[0]) unless
+               name_or_names.length > 1 || name_or_names[0].is_a?(Array)
+
+      name_or_names = name_or_names[0] if name_or_names[0].is_a?(Array)
+      name_or_names.map {|name|@query_aliases[name] || name}
     end
 
   end

@@ -119,7 +119,7 @@ module Cubicle
         aggregation_query = query.clone
         #If the query needs to filter on a field, it had better be in the aggregation...if it isn't a $where filter...
         filter = (query.where if query.respond_to?(:where))
-        filter.keys.each {|filter_key|aggregation_query.select(filter_key) unless filter_key=~/^\$.*/} unless filter.blank?
+        filter.keys.each {|filter_key|aggregation_query.select(filter_key) unless filter_key=~/\$where/} unless filter.blank?
 
         dimension_names = aggregation_query.dimension_names.sort
         agg_col_name = "#{aggregation.target_collection_name}_aggregation_#{dimension_names.join('.')}"

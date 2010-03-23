@@ -12,8 +12,7 @@ module Cubicle
       end
 
       def select(*args)
-        args = args[0] if args[0].is_a?(Array)
-
+        args = unalias(args[0].is_a?(Array) ? args[0] : args)
         if (args.include?(:all))
           select_all
           return
@@ -41,7 +40,7 @@ module Cubicle
           #selected. This allows select to be idempotent,
           #which is useful for ensuring certain members are selected
           #even though the user may already have selected them previously
-          args.each do |member_name|
+          args.each do |member_name|               
             if (member = @aggregation.dimensions[member_name])
               @dimensions << convert_dimension(member)
             elsif (member = @aggregation.measures[member_name])
@@ -70,7 +69,8 @@ module Cubicle
 
       def by(*args)
         return @by unless args.length > 0
-
+        #Resolve any query level aliases
+        args = unalias(args)
         #We'll need these in the result set
         select *args
         #replace any alias names with actual member names
@@ -94,15 +94,24 @@ module Cubicle
       def order_by(*args)
         return @order_by unless args.length > 0
         args.each do |order|
-          @order_by << (order.is_a?(Array) ? order : [order,:asc])
+          @order_by << (order.is_a?(Array) ? [unalias(order[0]),order[1]] : [unalias(order),:asc])
         end
+        self
       end
 
       def where(filter = nil)
         return prepare_filter unless filter
-        (@where ||= {}).merge!(filter)
+        filter.each do |key,value|
+          (@where ||= {})[unalias(key)] = value
+        end
         self
       end
+
+      def alias_member(alias_hash)
+        alias_hash.each {|key,value|@query_aliases[value] = key}
+        self
+      end
+      alias alias_members alias_member
     end
   end
 

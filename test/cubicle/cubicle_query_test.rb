@@ -351,5 +351,41 @@ class CubicleQueryTest < ActiveSupport::TestCase
         Cubicle::DateTime.db_time_format = :iso8601
       end
     end
+    context "when a query level alias has been specified" do
+      should "respect the alias in the by clause" do
+        query_results = DefectCubicle.query do
+          alias_member :date=>:my_crazy_date
+          select :all_measures
+          by :my_crazy_date
+        end
+        assert_equal :manufacture_date, query_results.name
+        assert_equal "2009-12-09", query_results.member_names[0]
+      end
+      should "respect the alias in the where clause" do
+        results = DefectCubicle.query do
+          alias_member :product=>:my_crazy_product
+          select :product, :all_measures
+          where  :my_crazy_product=>"Sad Day Moonshine"
+        end
+        assert_equal 1, results.length
+        assert_equal "Sad Day Moonshine", results[0]["product"]
+        assert_equal 3, results[0]["total_defects"]
+        assert_equal 2, results[0]["preventable_defects"]
+        assert_in_delta 15.91, results[0]["total_cost"],0.0001
+        assert_in_delta 15.91/3, results[0]["avg_cost"],0.0001
+        assert_in_delta 2/3.0, results[0]["preventable_pct"],0.0001
+      end
+      should "respect the alias in the order by clause" do
+        results = DefectCubicle.query do
+          alias_member :product=>:my_crazy_product
+          select :product,:all_measures
+          order_by [:my_crazy_product, :desc]
+        end
+        assert_equal 3, results.length
+        assert_equal "Sad Day Moonshine", results[0]["product"]
+        assert_equal "Evil's Pickling Spice", results[1]["product"]
+        assert_equal "Brush Fire Bottle Rockets", results[2]["product"]
+      end
+    end
   end
 end
