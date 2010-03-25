@@ -5,6 +5,7 @@ module Cubicle
       def initialize(dimension,parent_level=nil)
         @dimension = dimension
         @parent_level = parent_level
+        super() {|hash,key|hash[key]=[]}#Always have an array freshly baked when strangers call
       end
 
       attr_reader   :dimension, :parent_level

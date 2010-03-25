@@ -1,11 +1,13 @@
 class OrderedHashWithIndifferentAccess < OrderedHash
-  def initialize(initial_data={})
+  def initialize(initial_data={},&block)
     merge!(initial_data.stringify_keys)
+    super(&block) if block
   end
+
 
   def [](key)
       key = key.to_s
-      self[key] = [] unless self.keys.include?(key)
+      #self[key] = [] unless self.keys.include?(key)
       super(key)
     end
 

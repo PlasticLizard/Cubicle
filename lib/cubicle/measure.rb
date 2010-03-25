@@ -16,5 +16,15 @@ module Cubicle
     def default_aggregation_method
       :count
     end
+
+    def aggregate(values)
+      return nil if values.blank?
+      sum = values.inject(0){|total,val|total+val}
+      aggregation_method == :average ? sum/values.length : sum
+    end
+
+    def finalize_aggregation(aggregation)
+      aggregation
+    end
   end
 end

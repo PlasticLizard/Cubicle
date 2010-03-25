@@ -48,7 +48,7 @@ module Cubicle
       def extract_data(data)
         data.each do |result|
           new = result.dup
-          self << new.delete("_id").merge(new.delete("value"))
+          self << OrderedHashWithIndifferentAccess.new(new.delete("_id").merge(new.delete("value")))
         end
       end
     end

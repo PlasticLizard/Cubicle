@@ -1,6 +1,6 @@
 require "test_helper"
 
-class CubicleDataTableTest  < ActiveSupport::TestCase
+class TableTest  < ActiveSupport::TestCase
   context "Given a map-reduce query result" do
     setup do
       @raw_data =   [{"_id"=>{"company_id"=>'c1', "month"=>"2009-11"}, "value"=>{"requests"=>1.0, "transports"=>1.0}},

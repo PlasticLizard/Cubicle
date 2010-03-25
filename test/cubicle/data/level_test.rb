@@ -1,6 +1,6 @@
 require "test_helper"
 
-class CubicleDataLevelTest < ActiveSupport::TestCase
+class LevelTest < ActiveSupport::TestCase
   context "Cubicle::CubicleDataLevel#new" do
     should "Set the name using the dimension provided" do
       assert_equal :me, Cubicle::Data::Level.new(Cubicle::Dimension.new(:me)).name

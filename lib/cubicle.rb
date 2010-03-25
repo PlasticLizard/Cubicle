@@ -16,6 +16,7 @@ dir = File.dirname(__FILE__)
  "query/dsl/time_intelligence",
  "query/dsl",
  "query",
+ "data",
  "data/member",
  "data/level",
  "data/hierarchy",

@@ -1,23 +1,25 @@
 module Cubicle
   module Data
     class Hierarchy < Cubicle::Data::Level
+      include Member
 
       attr_reader :measures
       def initialize(root_dimension,measures)
-        @measures = measures
         super(root_dimension)
+        @measures = measures
+        @member_name = name
       end
 
       def self.hierarchize_table(table, dimension_names=nil)
-        dimension_names = [table.time_dimension_name || table.dimension_names].flatten if dimension_names.blank?         
-        Cubicle::Data::Hierarchy.extract_dimensions(dimension_names,table,table)
+        dimension_names = [table.time_dimension_name || table.dimension_names].flatten if dimension_names.blank?
+        Cubicle::Data::Hierarchy.extract_dimensions(dimension_names,table,table.dup)
       end
       private
 
       def self.extract_dimensions(dimension_names, data, table,parent_level=nil)
-        data, dimension_names = data.clone, dimension_names.dup
+        data, dimension_names = data.dup, dimension_names.dup
 
-        return data.map{|measures|OrderedHashWithIndifferentAccess.new(measures)} if dimension_names.blank?
+        return data if dimension_names.blank?
 
         dim_name = dimension_names.shift
         dim = table.dimensions.find{|d|d.name==dim_name}
