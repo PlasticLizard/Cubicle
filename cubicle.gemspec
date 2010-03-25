@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nathan Stults"]
-  s.date = %q{2010-03-24}
+  s.date = %q{2010-03-25}
   s.description = %q{Cubicle provides a dsl and aggregation caching framework for automating the generation, execution and caching of map reduce queries when using MongoDB in Ruby. Cubicle also includes a MongoMapper plugin for quickly performing ad-hoc, multi-level group-by queries against a MongoMapper model.}
   s.email = %q{hereiam@sonic.net}
   s.extra_rdoc_files = [
@@ -31,7 +31,10 @@ Gem::Specification.new do |s|
      "lib/cubicle/aggregation/map_reduce_helper.rb",
      "lib/cubicle/calculated_measure.rb",
      "lib/cubicle/data.rb",
-     "lib/cubicle/data_level.rb",
+     "lib/cubicle/data/hierarchy.rb",
+     "lib/cubicle/data/level.rb",
+     "lib/cubicle/data/member.rb",
+     "lib/cubicle/data/table.rb",
      "lib/cubicle/date_time.rb",
      "lib/cubicle/dimension.rb",
      "lib/cubicle/duration.rb",
@@ -40,6 +43,7 @@ Gem::Specification.new do |s|
      "lib/cubicle/member_list.rb",
      "lib/cubicle/mongo_environment.rb",
      "lib/cubicle/mongo_mapper/aggregate_plugin.rb",
+     "lib/cubicle/ordered_hash_with_indifferent_access.rb",
      "lib/cubicle/query.rb",
      "lib/cubicle/query/dsl.rb",
      "lib/cubicle/query/dsl/time_intelligence.rb",
@@ -49,11 +53,14 @@ Gem::Specification.new do |s|
      "test/config/database.yml",
      "test/cubicle/aggregation/ad_hoc_test.rb",
      "test/cubicle/cubicle_aggregation_test.rb",
-     "test/cubicle/cubicle_data_level_test.rb",
-     "test/cubicle/cubicle_data_test.rb",
      "test/cubicle/cubicle_query_test.rb",
+     "test/cubicle/data/data_test.rb",
+     "test/cubicle/data/level_test.rb",
+     "test/cubicle/data/member_test.rb",
+     "test/cubicle/data/table_test.rb",
      "test/cubicle/duration_test.rb",
      "test/cubicle/mongo_mapper/aggregate_plugin_test.rb",
+     "test/cubicle/ordered_hash_with_indifferent_access_test.rb",
      "test/cubicles/defect_cubicle.rb",
      "test/log/test.log",
      "test/models/defect.rb",
@@ -67,11 +74,14 @@ Gem::Specification.new do |s|
   s.test_files = [
     "test/cubicle/aggregation/ad_hoc_test.rb",
      "test/cubicle/cubicle_aggregation_test.rb",
-     "test/cubicle/cubicle_data_level_test.rb",
-     "test/cubicle/cubicle_data_test.rb",
      "test/cubicle/cubicle_query_test.rb",
+     "test/cubicle/data/data_test.rb",
+     "test/cubicle/data/level_test.rb",
+     "test/cubicle/data/member_test.rb",
+     "test/cubicle/data/table_test.rb",
      "test/cubicle/duration_test.rb",
      "test/cubicle/mongo_mapper/aggregate_plugin_test.rb",
+     "test/cubicle/ordered_hash_with_indifferent_access_test.rb",
      "test/cubicles/defect_cubicle.rb",
      "test/models/defect.rb",
      "test/test_helper.rb",
