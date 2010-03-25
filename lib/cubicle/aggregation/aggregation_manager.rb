@@ -42,7 +42,7 @@ module Cubicle
           if ((aggregation.name.split("_")[-1].split(".")) - query.member_names - [:all_measures]).blank?
             filter = prepare_filter(query,options[:where] || {})
           else
-            aggregation = aggregate(query,:source_collection=>collection.name)
+            aggregation = aggregate(query,:source_collection=>aggregation.name)
           end
         end
 
@@ -146,7 +146,7 @@ module Cubicle
         options[:finalize] = MapReduceHelper.generate_finalize_function(query)
         options["query"] = prepare_filter(query,options[:where] || {})
 
-        query.source_collection_name ||= aggregation.source_collection_name
+        query.source_collection_name = options.delete(:source_collection) || query.source_collection_name || aggregation.source_collection_name
 
         target_collection = options.delete(:target_collection)
         target_collection ||= query.target_collection_name if query.respond_to?(:target_collection_name)
