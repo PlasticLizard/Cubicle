@@ -47,12 +47,12 @@ module Cubicle
         end
 
         if aggregation.blank?
-          Cubicle::Data.new(query,[],0) if aggregation == []
+          Cubicle::Data::Table.new(query,[],0) if aggregation == []
         else
           count = aggregation.count
           results = aggregation.find(filter,find_options).to_a
           aggregation.drop if aggregation.name =~ /^tmp.mr.*/
-          Cubicle::Data.new(query, results, count)
+          Cubicle::Data::Table.new(query, results, count)
         end
 
       end

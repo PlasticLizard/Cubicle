@@ -5,6 +5,7 @@ require "logger"
 
 dir = File.dirname(__FILE__)
 ["mongo_environment",
+ "ordered_hash_with_indifferent_access",
  "member",
  "member_list",
  "measure",
@@ -15,8 +16,10 @@ dir = File.dirname(__FILE__)
  "query/dsl/time_intelligence",
  "query/dsl",
  "query",
- "data_level",
- "data",
+ "data/member",
+ "data/level",
+ "data/hierarchy",
+ "data/table",
  "aggregation/aggregation_manager",
  "aggregation/map_reduce_helper",
  "aggregation/dsl",

@@ -1,6 +1,6 @@
 require "test_helper"
 
-class CubicleDataTest  < ActiveSupport::TestCase
+class CubicleDataTableTest  < ActiveSupport::TestCase
   context "Given a map-reduce query result" do
     setup do
       @raw_data =   [{"_id"=>{"company_id"=>'c1', "month"=>"2009-11"}, "value"=>{"requests"=>1.0, "transports"=>1.0}},
@@ -11,7 +11,7 @@ class CubicleDataTest  < ActiveSupport::TestCase
         dimensions :company_id, :month
         measures :requests, :transports, :controllable_declines
       end
-      @data = Cubicle::Data.new(@query,@raw_data)
+      @data = Cubicle::Data::Table.new(@query,@raw_data)
     end
     context "CubicleData#initialize" do
       should "merge dimension and measure hashes for each row when initialized" do
