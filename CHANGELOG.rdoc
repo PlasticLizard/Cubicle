@@ -1,3 +1,10 @@
+== 0.1.3
+* Formalized flat (Cubicle::Data::Table) and hierarchical (Cubicle::Data::Hierarchy) data results from cubicle queries,
+  and added client side support for rolling up measure values in hierarchical data so that no matter how a given
+  query is organized hierarchically, a summary of aggregated measure values for each level of data will be available. 
+* Re-organized codebase
+* Bug fixes
+
 == 0.1.2
 * Added ability to calculate durations between two timestamps
 * Bug fixes
