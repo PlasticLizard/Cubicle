@@ -80,6 +80,15 @@ module Cubicle
         duration(*(args<<options))
       end
 
+      def duration_since(*args)
+        options = args.extract_options!
+        ms1 = args.length > 1 ? args.delete_at(1) : args.shift
+        options[ms1] = :now
+        duration(*(args<<options))
+      end
+      alias age_since duration_since
+      alias elapsed duration_since
+
       def durations_in(unit_of_time = nil)
         return (@duration_unit ||= :seconds) unless unit_of_time
         @duration_unit = unit_of_time.to_s.pluralize.to_sym

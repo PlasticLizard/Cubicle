@@ -1,3 +1,10 @@
+==0.1.5
+ * Added duration_since (aliased as elapsed, age_since) to calculate the time elapsed since any
+   given timestamp and the current execution time of the query.
+
+== 0.1.4
+ * Cached aggregations were being stored on disk, but not properly utilized. This is now fixed.
+
 == 0.1.3
 * Formalized flat (Cubicle::Data::Table) and hierarchical (Cubicle::Data::Hierarchy) data results from cubicle queries,
   and added client side support for rolling up measure values in hierarchical data so that no matter how a given

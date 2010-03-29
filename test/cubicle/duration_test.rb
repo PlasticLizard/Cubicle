@@ -23,7 +23,7 @@ class DurationTest < ActiveSupport::TestCase
       assert_equal 2 * 60 * 60 * 24, a2["ms2_to_ms3_sum"]
       assert_equal 4,                a2["total_duration"]
     end
-     should "correctly aggregate durations" do
+    should "correctly aggregate durations" do
       results = DefectCubicle.query do
         select :all_measures, :product
       end
@@ -33,7 +33,7 @@ class DurationTest < ActiveSupport::TestCase
       assert_equal 4 * 60 * 60 * 24,   results["ms2_to_ms3_sum"]
       assert_equal 3.5,                results["total_duration"]
 
-     end
+    end
     should "respect the condition argument" do
       results = DefectCubicle.query do
         select :all_measures, :product
@@ -41,6 +41,28 @@ class DurationTest < ActiveSupport::TestCase
       results = results[0]
 
       assert_equal 3, results["conditional_duration"]
+    end
+    should "calculate duration_since via elapsed" do
+      Time.now = "1/10/2000"
+      results = DefectCubicle.query do
+        select :all_measures, :product
+      end
+      puts results.inspect
+      results = results[0]
+
+      assert_equal((6+5)/2.0, results["ms3_to_now_average"])
+
+    end
+    should "calculate named duration_since via age_since" do
+      Time.now = "1/10/2000"
+      results = DefectCubicle.query do
+        select :all_measures, :product
+      end
+      puts results.inspect
+      results = results[0]
+
+      assert_equal((6+5)/2.0, results["avg_time_since_ms3"])
+
     end
   end
 

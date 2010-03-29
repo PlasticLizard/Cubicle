@@ -23,7 +23,7 @@ module Cubicle
       cond = " && (#{self.condition})" unless self.condition.blank?
       #prefix these names for the expression
       prefix = "#{self.timestamp_prefix}#{self.timestamp_prefix.blank? ? '' : '.'}"
-      ms1,ms2 = [self.begin_milestone,self.end_milestone].map{|ms|"this.#{prefix}#{ms}"}
+      ms1,ms2 = [self.begin_milestone,self.end_milestone].map{|ms|ms.to_s=='now' ? "new Date(#{Time.now.to_i*1000})" : "this.#{prefix}#{ms}"}
       @expression = "(#{ms1} && #{ms2}#{cond}) ? (#{ms2}-#{ms1})/#{denominator} : null"
     end
 
