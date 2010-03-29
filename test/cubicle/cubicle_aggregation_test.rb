@@ -23,6 +23,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_equal "Repaired", @results[0]["outcome"]
           assert_equal 1, @results[0]["total_defects"]
           assert_equal 0, @results[0]["preventable_defects"]
+          assert_nil   @results[0]["conditioned_preventable"]
           assert_equal 0.43, @results[0]["total_cost"]
           assert_equal 0.43, @results[0]["avg_cost"]
           assert_equal 0, @results[0]["preventable_pct"]
@@ -36,6 +37,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_equal "Repaired", @results[1]["outcome"]
           assert_equal 2, @results[1]["total_defects"]
           assert_equal 1, @results[1]["preventable_defects"]
+          assert_equal 1, @results[1]["conditioned_preventable"]
           assert_in_delta 12.97, @results[1]["total_cost"], 0.0001
           assert_in_delta 6.485, @results[1]["avg_cost"],0.0001
           assert_equal 0.5, @results[1]["preventable_pct"]
@@ -49,6 +51,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_equal "Discarded", @results[2]["outcome"]
           assert_equal 1, @results[2]["total_defects"]
           assert_equal 1, @results[2]["preventable_defects"]
+          assert_equal 1, @results[2]["conditioned_preventable"]
           assert_equal 0.02, @results[2]["total_cost"]
           assert_equal 0.02, @results[2]["avg_cost"]
           assert_equal 1, @results[2]["preventable_pct"]
@@ -62,6 +65,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_equal "Consumed", @results[3]["outcome"]
           assert_equal 1, @results[3]["total_defects"]
           assert_equal 1, @results[3]["preventable_defects"]
+          assert_equal 1, @results[3]["conditioned_preventable"]
           assert_equal 2.94, @results[3]["total_cost"]
           assert_equal 2.94, @results[3]["avg_cost"]
           assert_equal 1, @results[3]["preventable_pct"]

@@ -1,10 +1,9 @@
 module Cubicle
   class Duration < Measure
-    attr_accessor :condition, :duration_unit, :begin_milestone, :end_milestone, :timestamp_prefix
+    attr_accessor :duration_unit, :begin_milestone, :end_milestone, :timestamp_prefix
 
     def initialize(*args)
       super
-      self.condition = options :condition_expression,:condition
       self.duration_unit = options(:in) || :seconds
       self.timestamp_prefix = options :timestamp_prefix, :prefix
       self.expression_type = :javascript
@@ -19,15 +18,25 @@ module Cubicle
       :average
     end
 
+    def condition
+      cond = " && (#{super})" unless super.blank?
+      "#{milestone_js(:begin)} && #{milestone_js(:end)}#{cond}"
+    end
+
     def expression
-      cond = " && (#{self.condition})" unless self.condition.blank?
       #prefix these names for the expression
-      prefix = "#{self.timestamp_prefix}#{self.timestamp_prefix.blank? ? '' : '.'}"
-      ms1,ms2 = [self.begin_milestone,self.end_milestone].map{|ms|ms.to_s=='now' ? "new Date(#{Time.now.to_i*1000})" : "this.#{prefix}#{ms}"}
-      @expression = "(#{ms1} && #{ms2}#{cond}) ? (#{ms2}-#{ms1})/#{denominator} : null"
+#      prefix = "#{self.timestamp_prefix}#{self.timestamp_prefix.blank? ? '' : '.'}"
+#      ms1,ms2 = [self.begin_milestone,self.end_milestone].map{|ms|ms.to_s=='now' ? "new Date(#{Time.now.to_i*1000})" : "this.#{prefix}#{ms}"}
+      @expression = "(#{milestone_js(:end)}-#{milestone_js(:begin)})/#{denominator}" 
     end
 
     private
+
+    def milestone_js(which)
+     prefix = "#{self.timestamp_prefix}#{self.timestamp_prefix.blank? ? '' : '.'}"
+     ms = self.send("#{which.to_s}_milestone")
+     ms.to_s=='now' ? "new Date(#{Time.now.to_i*1000})" : "this.#{prefix}#{ms}"
+    end
 
     def denominator
       #Date math results in milliseconds in javascript

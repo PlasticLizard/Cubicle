@@ -118,6 +118,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
         @results = DefectCubicle.query do
           transient!
           select :manufacture_date, :all_measures
+
           where  :date=>"2009-12-09"
         end
       end

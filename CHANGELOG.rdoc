@@ -1,3 +1,9 @@
+==0.1.6
+ *Added generic 'condition' argument to member definitions, which allows the specification of a JavaScript expression
+  which will determine if the measure (or dimension) expression will be evaluated. This capability was available
+  before via the :expression option, but using a :condition modifier allows for more straightforward (readable) measure
+  definitions and separates the definition of the actual value from the conditions under which the value is valid.
+
 ==0.1.5
  * Added duration_since (aliased as elapsed, age_since) to calculate the time elapsed since any
    given timestamp and the current execution time of the query.

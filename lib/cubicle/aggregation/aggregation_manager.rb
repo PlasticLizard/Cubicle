@@ -182,7 +182,7 @@ module Cubicle
               filter_value = "'#{filter_value}'" if filter_value.is_a?(String) || filter_value.is_a?(Symbol)
               filter_value = "(#{member.expression})==#{filter_value}"
             else
-              filter_name = member.expression
+              filter_name = member.field_name
             end
           else
             filter_name = "#{prefix}.#{member.name}"

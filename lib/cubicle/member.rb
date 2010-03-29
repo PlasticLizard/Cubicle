@@ -2,10 +2,12 @@ module Cubicle
   class Member
 
     attr_accessor :name,
+                  :field_name,
                   :expression,
                   :expression_type, #can be :field_name, :javascript
                   :options,
-                  :alias_list
+                  :alias_list,
+                  :condition
 
     def initialize(*args)
       opts = args.extract_options!
@@ -13,20 +15,24 @@ module Cubicle
 
       self.options = (opts || {}).symbolize_keys
 
-      if (@expression = self.options.delete(:field_name))
+      if @expression = options(:field_name)
         @expression_type = :field_name
-      elsif (@expression = self.options.delete(:expression))
+        @field_name = @expression
+      elsif @expression = options(:expression)
         @expression_type = :javascript
       else
         @expression = @name
         @expression_type = :field_name
       end
 
-      member_alias = self.options[:alias]
+      member_alias = options(:alias)
       if (member_alias)
         member_alias = [member_alias] unless member_alias.is_a?(Array)
         @alias_list = member_alias.map{|a|a.to_s}
       end
+
+      @condition = options :condition_expression,:condition
+
 
     end
 
@@ -50,9 +56,13 @@ module Cubicle
       ["#{name}:#{to_js_value}"]
     end
 
-    def to_js_value
+    def expression
       prefix, suffix = expression_type == :field_name ? ['this.',''] : ['(',')']
-      "#{prefix}#{expression}#{suffix}"
+      "#{prefix}#{@expression}#{suffix}"
+    end
+
+    def to_js_value
+      condition.blank? ? expression : "(#{condition}) ? (#{expression}) : null"
     end
   end
 end
