@@ -106,6 +106,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal "Sad Day Moonshine", @results[0]["product"]
         assert_equal 3, @results[0]["total_defects"]
         assert_equal 2, @results[0]["preventable_defects"]
+        assert_equal 2, @results[0]["conditioned_preventable"]
         assert_equal 15.91, @results[0]["total_cost"]
         assert_equal 15.91/3, @results[0]["avg_cost"]
         assert_equal 2/3.0, @results[0]["preventable_pct"]
@@ -145,6 +146,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal "Sad Day Moonshine", @results[0]["product"]
         assert_equal 3, @results[0]["total_defects"]
         assert_equal 2, @results[0]["preventable_defects"]
+        assert_equal 2, @results[0]["conditioned_preventable"]
         assert_in_delta 15.91, @results[0]["total_cost"],0.0001
         assert_in_delta 15.91/3, @results[0]["avg_cost"],0.0001
         assert_in_delta 2/3.0, @results[0]["preventable_pct"],0.0001
@@ -181,6 +183,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal "Sad Day Moonshine", @results[0]["product"]
         assert_equal 3, @results[0]["total_defects"]
         assert_equal 2, @results[0]["preventable_defects"]
+        assert_equal 2, @results[0]["conditioned_preventable"]
         assert_in_delta 15.91, @results[0]["total_cost"],0.0001
         assert_in_delta 15.91/3, @results[0]["avg_cost"],0.0001
         assert_equal 2/3.0, @results[0]["preventable_pct"]
@@ -200,6 +203,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal "Sad Day Moonshine", @results[0]["product"]
         assert_equal 3, @results[0]["total_defects"]
         assert_equal 2, @results[0]["preventable_defects"]
+        assert_equal 2, @results[0]["conditioned_preventable"]
         assert_equal 15.91, @results[0]["total_cost"]
         assert_equal 15.91/3, @results[0]["avg_cost"]
         assert_equal 2/3.0, @results[0]["preventable_pct"]
@@ -372,6 +376,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal "Sad Day Moonshine", results[0]["product"]
         assert_equal 3, results[0]["total_defects"]
         assert_equal 2, results[0]["preventable_defects"]
+        assert_equal 2, results[0]["conditioned_preventable"]
         assert_in_delta 15.91, results[0]["total_cost"],0.0001
         assert_in_delta 15.91/3, results[0]["avg_cost"],0.0001
         assert_in_delta 2/3.0, results[0]["preventable_pct"],0.0001

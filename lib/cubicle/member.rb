@@ -22,6 +22,7 @@ module Cubicle
         @expression_type = :javascript
       else
         @expression = @name
+        @field_name = @name
         @expression_type = :field_name
       end
 

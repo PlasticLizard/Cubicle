@@ -47,7 +47,6 @@ class DurationTest < ActiveSupport::TestCase
       results = DefectCubicle.query do
         select :all_measures, :product
       end
-      puts results.inspect
       results = results[0]
 
       assert_equal((6+5)/2.0, results["ms3_to_now_average"])
@@ -58,7 +57,6 @@ class DurationTest < ActiveSupport::TestCase
       results = DefectCubicle.query do
         select :all_measures, :product
       end
-      puts results.inspect
       results = results[0]
 
       assert_equal((6+5)/2.0, results["avg_time_since_ms3"])
