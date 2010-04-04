@@ -21,7 +21,7 @@ class OrderedHashWithIndifferentAccess < OrderedHash
 
    def method_missing(sym,*args,&block)
       return self[sym.to_s[0..-2]] = args[0] if sym.to_s =~ /.*=$/
-      return self[sym] if self.keys.include?(sym.to_s)
-      missing_member_default
+      return self[sym] if include?(sym)
+      nil
     end
 end
