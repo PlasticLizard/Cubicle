@@ -39,7 +39,7 @@ module Cubicle
 
     def options(*args)
       return @options if args.empty?
-      args.collect {|opt|found=@options.delete(opt)}.pop
+      args.collect {|opt|found=@options.delete(opt)}.compact.pop
     end
 
     def matches(member_name)

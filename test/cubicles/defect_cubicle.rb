@@ -27,9 +27,24 @@ class DefectCubicle
   duration  :total_duration, :ms1 => :ms3, :in=>:days
   duration  :conditional_duration, :ms1 => :ms3, :in=>:days, :condition=>"this.defect_id != 2"
   elapsed   :ms3, :in=>:days
-  age_since :avg_time_since_ms3, :ms3, :in=>:days
+  age_since :avg_time_since_ms3,:ms3, :in=>:days
+
+  #bucketized fields
+  categorize :avg_cost_category,
+             :avg_cost, 1..5, :bucket_size=>0.5, :range_start_bump=>0.01 do |bucket_start,bucket_end|
+    if bucket_start == :begin
+      '< $1'
+    elsif bucket_end == :end
+      '> $5'
+    else
+      "$#{bucket_start} - $#{bucket_end}"
+    end
+  end
+
+
 
   #pre-cached aggregations
   aggregation :month, :year, :product
   aggregation :month, :region
+
 end

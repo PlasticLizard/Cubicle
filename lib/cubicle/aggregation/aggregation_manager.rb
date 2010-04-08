@@ -39,7 +39,7 @@ module Cubicle
           aggregation = aggregation_for(query)
           #if the query exactly matches the aggregation in terms of requested members, we can issue a simple find
           #otherwise, a second map reduce is required to reduce the data set one last time
-          if ((aggregation.name.split("_")[-1].split(".")) - query.member_names - [:all_measures]).blank?
+          if query.all_dimensions? || ((aggregation.name.split("_")[-1].split(".")) - query.member_names - [:all_measures]).blank?
             filter = prepare_filter(query,options[:where] || {})
           else
             aggregation = aggregate(query,:source_collection=>aggregation.name)

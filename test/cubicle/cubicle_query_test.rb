@@ -107,8 +107,8 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal 3, @results[0]["total_defects"]
         assert_equal 2, @results[0]["preventable_defects"]
         assert_equal 2, @results[0]["conditioned_preventable"]
-        assert_equal 15.91, @results[0]["total_cost"]
-        assert_equal 15.91/3, @results[0]["avg_cost"]
+        assert_equal 21.63, @results[0]["total_cost"]
+        assert_equal 21.63/3, @results[0]["avg_cost"]
         assert_equal 2/3.0, @results[0]["preventable_pct"]
       end
 
@@ -147,8 +147,8 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal 3, @results[0]["total_defects"]
         assert_equal 2, @results[0]["preventable_defects"]
         assert_equal 2, @results[0]["conditioned_preventable"]
-        assert_in_delta 15.91, @results[0]["total_cost"],0.0001
-        assert_in_delta 15.91/3, @results[0]["avg_cost"],0.0001
+        assert_in_delta 21.63, @results[0]["total_cost"],0.0001
+        assert_in_delta 21.63/3, @results[0]["avg_cost"],0.0001
         assert_in_delta 2/3.0, @results[0]["preventable_pct"],0.0001
       end
 
@@ -184,8 +184,8 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal 3, @results[0]["total_defects"]
         assert_equal 2, @results[0]["preventable_defects"]
         assert_equal 2, @results[0]["conditioned_preventable"]
-        assert_in_delta 15.91, @results[0]["total_cost"],0.0001
-        assert_in_delta 15.91/3, @results[0]["avg_cost"],0.0001
+        assert_in_delta 21.63, @results[0]["total_cost"],0.0001
+        assert_in_delta 21.63/3, @results[0]["avg_cost"],0.0001
         assert_equal 2/3.0, @results[0]["preventable_pct"]
       end
 
@@ -204,8 +204,8 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal 3, @results[0]["total_defects"]
         assert_equal 2, @results[0]["preventable_defects"]
         assert_equal 2, @results[0]["conditioned_preventable"]
-        assert_equal 15.91, @results[0]["total_cost"]
-        assert_equal 15.91/3, @results[0]["avg_cost"]
+        assert_equal 21.63, @results[0]["total_cost"]
+        assert_equal 21.63/3, @results[0]["avg_cost"]
         assert_equal 2/3.0, @results[0]["preventable_pct"]
       end
 
@@ -266,7 +266,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
       end
       should "present YTD data based on Time.now" do
         assert_equal 1, @results.length
-        assert_in_delta 12.97, @results[0]["total_cost"],0.0001
+        assert_in_delta 18.69, @results[0]["total_cost"],0.0001
       end
     end
     context "when requesting MTD in a non-transient query do" do
@@ -279,7 +279,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
       end
       should "present MTD data based on Time.now" do
         assert_equal 1, @results.length
-        assert_in_delta 12.99, @results[0]["total_cost"],0.0001
+        assert_in_delta 18.71, @results[0]["total_cost"],0.0001
       end
     end
     context "when requesting MTD in a transient query do" do
@@ -293,7 +293,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
       end
       should "present MTD data based on Time.now" do
         assert_equal 1, @results.length
-        assert_in_delta 12.99, @results[0]["total_cost"],0.0001
+        assert_in_delta 18.71, @results[0]["total_cost"],0.0001
       end
     end
     context "when requesting for_the_last_complete 1.months" do
@@ -377,8 +377,8 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal 3, results[0]["total_defects"]
         assert_equal 2, results[0]["preventable_defects"]
         assert_equal 2, results[0]["conditioned_preventable"]
-        assert_in_delta 15.91, results[0]["total_cost"],0.0001
-        assert_in_delta 15.91/3, results[0]["avg_cost"],0.0001
+        assert_in_delta 21.63, results[0]["total_cost"],0.0001
+        assert_in_delta 21.63/3, results[0]["avg_cost"],0.0001
         assert_in_delta 2/3.0, results[0]["preventable_pct"],0.0001
       end
       should "respect the alias in the order by clause" do

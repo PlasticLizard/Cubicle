@@ -1,3 +1,10 @@
+==0.1.8
+ * Added 'bucketize' aliased as 'categorize' to cubicle DSL to allow dimensions to be created from bucketizing
+   (categorizing based on name) a measure value.
+
+==0.1.7
+ * Minor bug fixes
+
 ==0.1.6
  *Added generic 'condition' argument to member definitions, which allows the specification of a JavaScript expression
   which will determine if the measure (or dimension) expression will be evaluated. This capability was available

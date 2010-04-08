@@ -11,6 +11,7 @@ dir = File.dirname(__FILE__)
  "measure",
  "calculated_measure",
  "dimension",
+ "bucketized_dimension",
  "ratio",
  "duration",
  "query/dsl/time_intelligence",

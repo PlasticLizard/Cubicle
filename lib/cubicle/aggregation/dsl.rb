@@ -100,6 +100,13 @@ module Cubicle
         measures << Ratio.new(member_name, numerator, denominator)
       end
 
+      def bucketize(dimension_name, source_measure_name, bucket_range, options={}, &block)
+        source_measure = measures[source_measure_name]
+        raise "#{source_measure_name} does not appear to be a valid measure name. bucketize/categorize declarations must be placed AFTER any measures it uses have been defined." unless source_measure
+        dimensions << BucketizedDimension.new(dimension_name, source_measure.to_js_value, bucket_range, options, &block) 
+      end
+      alias categorize bucketize
+
       def aggregation(*member_list)
         member_list = member_list[0] if member_list[0].is_a?(Array)
         aggregations << member_list

@@ -58,7 +58,7 @@ class Defect
                   :plant=>{:name=>"Plant1",:address=>{:region=>"West",:location=>"San Francisco, Ca"}},
                   :operator=>"Franny",
                   :outcome=>"Repaired",
-                  :cost=>0.78,
+                  :cost=>6.50,
                   :root_cause=>:act_of_god
 
     Defect.create :defect_id=>"2",
