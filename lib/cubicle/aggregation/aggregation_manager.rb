@@ -19,7 +19,7 @@ module Cubicle
       def target_collection_name
         aggregation.target_collection_name
       end
-         
+
 
       #noinspection RubyArgCount
       def execute_query(query,options={})
@@ -179,8 +179,7 @@ module Cubicle
           if transient
             if (member.expression_type == :javascript)
               filter_name = "$where"
-              filter_value = "'#{filter_value}'" if filter_value.is_a?(String) || filter_value.is_a?(Symbol)
-              filter_value = "(#{member.expression})==#{filter_value}"
+              filter_value = make_filter_transient(member.expression,filter_value)
             else
               filter_name = member.field_name
             end
@@ -207,6 +206,31 @@ module Cubicle
         return if database.collection_names.include?(target_collection_name)
         process
       end
+
+      def make_filter_transient(filter_expression,filter_value)
+        filter_value = {"$eq"=>filter_value} unless filter_value.is_a?(Hash)
+        conditions = filter_value.keys.map do |operator|
+          "val #{make_operator_transient(operator)} #{quote_if_required(filter_value[operator])}"
+        end
+        return "return (function(val){return #{conditions.join(" && ")};})(#{filter_expression})"
+      end
+
+      def make_operator_transient(operator)
+        case operator
+          when "$eq" then "==" #not actually a mongo operator, but added for keeping things consistent
+          when "$ne" then "!="
+          when "$lt" then "<"
+          when "$gt" then ">"
+          when "$lte" then "<="
+          when "$gte" then ">="
+          else raise "unsupported filter operator for filtering members of expression based members in a transient query: #{operator}"
+        end
+      end
+
+      def quote_if_required(filter_value)
+        (filter_value.is_a?(String) || filter_value.is_a?(Symbol)) ? "'#{filter_value}'" :filter_value
+      end
+
     end
   end
 end

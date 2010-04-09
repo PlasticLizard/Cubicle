@@ -223,7 +223,33 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal "Evil's Pickling Spice", @results[0]["product"]
         assert_equal "Sad Day Moonshine", @results[1]["product"]
       end
-
+    end
+    context "when specifying a special dimensional filter for an expression based dimension on a transient query" do
+      setup do
+        @results = DefectCubicle.query do
+          transient!
+          select :product,:all_measures
+          where  :month=>{"$ne"=>"2010-01"}
+        end
+      end
+      should "return a filtered subset of data" do
+        assert_equal 2, @results.length
+        assert_equal "Brush Fire Bottle Rockets", @results[0]["product"]
+        assert_equal "Sad Day Moonshine", @results[1]["product"]
+      end
+    end
+    context "when specifying several special dimensional filters for an expression based dimension on a transient query" do
+      setup do
+        @results = DefectCubicle.query do
+          transient!
+          select :product,:all_measures
+          where  :month=>{"$gt"=>"2010-01", "$lte"=>"2010-02"}
+        end
+      end
+      should "return a filtered subset of data" do
+        assert_equal 1, @results.length
+        assert_equal "Sad Day Moonshine", @results[0]["product"]
+      end
     end
     context "when specifying a sort order on a transient query" do
       setup do

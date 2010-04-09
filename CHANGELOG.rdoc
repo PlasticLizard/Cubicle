@@ -1,3 +1,13 @@
+==0.1.10
+  *enhanced cubicle aggregation manager to transparently convert several of the basic mongo operators (such as $ne,
+  $gt, $gte, etc) into javascript for use in the generated $where clause for transient queries. In practice, this
+  means that you can define a measure as an expression, say dimension :month, :expression=>"'2010-01'", and then
+  use that dimension name in a standard mongo driver compatible filter expression, without concern for whether
+  your query is a transient query or a regular query - cubicle will do the appropriate conversion to javascript
+  in the former case, translating :month=>{"$gte"=>"'2009-12'", "$lt"=>"'2010-02'"} into the functional equivalent of
+  "$where"=>"'2010-01' >= '2009-12' && '2010-01' < '2010-02'". Actually, an inline function is used to reduce IO
+  as repeating the expression for each comparison can get out of hand if your expression is large.
+
 ==0.1.9
   * Fixed problems with missing number in bucket intervals. Moved resolution of source measure javascript to
   * last moment, to ensure dynamic values don't get accidentally cached too early.
