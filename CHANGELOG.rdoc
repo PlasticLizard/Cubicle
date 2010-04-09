@@ -1,3 +1,7 @@
+==0.1.9
+  * Fixed problems with missing number in bucket intervals. Moved resolution of source measure javascript to
+  * last moment, to ensure dynamic values don't get accidentally cached too early.
+
 ==0.1.8
  * Added 'bucketize' aliased as 'categorize' to cubicle DSL to allow dimensions to be created from bucketizing
    (categorizing based on name) a measure value.

@@ -103,7 +103,7 @@ module Cubicle
       def bucketize(dimension_name, source_measure_name, bucket_range, options={}, &block)
         source_measure = measures[source_measure_name]
         raise "#{source_measure_name} does not appear to be a valid measure name. bucketize/categorize declarations must be placed AFTER any measures it uses have been defined." unless source_measure
-        dimensions << BucketizedDimension.new(dimension_name, source_measure.to_js_value, bucket_range, options, &block) 
+        dimensions << BucketizedDimension.new(dimension_name, source_measure, bucket_range, options, &block) 
       end
       alias categorize bucketize
 
