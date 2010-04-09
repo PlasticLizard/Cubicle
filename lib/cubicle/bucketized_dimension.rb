@@ -11,6 +11,7 @@ module Cubicle
       @formatter = block
       @step = options(:bucket_size, :step) || 1
       @bump = options(:range_start_bump, :bump) || 1
+      self.expression_type = :javascript
     end
 
     def value_expression
