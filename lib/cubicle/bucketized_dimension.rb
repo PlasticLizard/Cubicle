@@ -19,10 +19,14 @@ module Cubicle
       measure.to_s
     end
 
-    def to_js_value
-      generate_buckets
-      "(function(val){if(val==null || isNaN(val))return null; #{@buckets.join(';')}})(#{value_expression})"
+    def expression
+    generate_buckets
+      @expression = "(function(val){if(val==null || isNaN(val))return null; #{@buckets.join(';')}})(#{value_expression})"
     end
+
+#    def to_js_value
+#
+#    end
 
     private
     def generate_buckets

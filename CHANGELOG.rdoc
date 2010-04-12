@@ -1,3 +1,6 @@
+==0.1.11
+  *Fixed a bug when filtering categorized dimensions in transient queries
+
 ==0.1.10
   *enhanced cubicle aggregation manager to transparently convert several of the basic mongo operators (such as $ne,
   $gt, $gte, etc) into javascript for use in the generated $where clause for transient queries. In practice, this

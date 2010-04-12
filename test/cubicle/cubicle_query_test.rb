@@ -251,6 +251,19 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal "Sad Day Moonshine", @results[0]["product"]
       end
     end
+    context "when specifying a special dimensional filter for an expression based bucketized dimension on a transient query" do
+      setup do
+        @results = DefectCubicle.query do
+          transient!
+          select :product, :all_measures
+          where :avg_cost_category=>{"$ne"=>"< $1"}
+        end
+      end
+      should "return a filtered subset of data" do
+        puts @results.inspect
+        assert_equal 1, @results.length
+      end
+    end
     context "when specifying a sort order on a transient query" do
       setup do
         @results = DefectCubicle.query do
