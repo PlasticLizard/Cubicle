@@ -29,6 +29,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_equal 0.43, @results[0]["avg_cost"]
           assert_equal 0, @results[0]["preventable_pct"]
           assert_equal "< $1", @results[0]["avg_cost_category"]
+          assert_equal 1, @results[0]["distinct_products"]
 
           assert_equal "2010-01-01", @results[1]["manufacture_date"]
           assert_equal "2010-01", @results[1]["month"]
@@ -44,6 +45,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_in_delta (12.19 + 6.50)/2.0, @results[1]["avg_cost"],0.0001
           assert_equal 0.5, @results[1]["preventable_pct"]
           assert_equal "> $5", @results[1]["avg_cost_category"]
+          assert_equal 1, @results[1]["distinct_products"]
 
           assert_equal "2010-01-05", @results[2]["manufacture_date"]
           assert_equal "2010-01", @results[2]["month"]
@@ -59,6 +61,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_equal 0.02, @results[2]["avg_cost"]
           assert_equal 1, @results[2]["preventable_pct"]
           assert_equal "< $1", @results[2]["avg_cost_category"]
+          assert_equal 1, @results[2]["distinct_products"]
 
           assert_equal "2010-02-01", @results[3]["manufacture_date"]
           assert_equal "2010-02", @results[3]["month"]
@@ -74,9 +77,10 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_equal 2.94, @results[3]["avg_cost"]
           assert_equal 1, @results[3]["preventable_pct"]
           assert_equal "$2.51 - $3.0", @results[3]["avg_cost_category"]
+          assert_equal 1, @results[3]["distinct_products"]
         end
       end
-      
+
       context "Processing a cube" do
         setup do
           DefectCubicle.expire!

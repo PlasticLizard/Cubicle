@@ -143,6 +143,7 @@ module Cubicle
 
       def aggregate(query,options={})
         map, reduce = MapReduceHelper.generate_map_function(query), MapReduceHelper.generate_reduce_function
+        map = Mustache.render(map, AggregationView.new(aggregation)) if aggregation
         options[:finalize] = MapReduceHelper.generate_finalize_function(query)
         options["query"] = prepare_filter(query,options[:where] || {})
 

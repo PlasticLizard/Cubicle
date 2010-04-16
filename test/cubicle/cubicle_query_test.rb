@@ -431,6 +431,15 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal "Evil's Pickling Spice", results[1]["product"]
         assert_equal "Brush Fire Bottle Rockets", results[2]["product"]
       end
+      should "calculate distinct counts properly" do
+        results = DefectCubicle.query do
+          select :year, :distinct_products
+          where :year=>"2010"
+        end
+        puts results.inspect
+        assert_equal 1, results.length
+        assert_equal 2, results[0]["distinct_products"]
+      end
     end
   end
 end

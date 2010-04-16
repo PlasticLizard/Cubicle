@@ -12,7 +12,9 @@ class DefectCubicle
 
   dimensions :operator, :outcome
 
+  
   count :total_defects,          :field_name=>'defect_id'
+  count :distinct_products,      :field_name=>'product.name', :distinct=>true
   count :preventable_defects,    :expression=>'this.root_cause != "act_of_god"'
   count :conditioned_preventable,:expression=>'1.0', :condition=>'this.root_cause != "act_of_god"'
   sum   :total_cost,             :field_name=>'cost'

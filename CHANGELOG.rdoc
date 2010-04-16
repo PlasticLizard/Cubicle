@@ -1,3 +1,7 @@
+==0.1.12
+  *Added distinct' option to 'count' measure, to allow measures which represent distinct counts of  given field/expression value.
+  ONLY works when the value being distinctly counted is a string.
+
 ==0.1.11
   *Fixed a bug when filtering categorized dimensions in transient queries
 

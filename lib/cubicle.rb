@@ -2,6 +2,7 @@ require "rubygems"
 require "active_support"
 require "mongo"
 require "logger"
+require "mustache"
 
 dir = File.dirname(__FILE__)
 ["mongo_environment",
@@ -22,6 +23,7 @@ dir = File.dirname(__FILE__)
  "data/level",
  "data/hierarchy",
  "data/table",
+ "aggregation/aggregation_view",
  "aggregation/aggregation_manager",
  "aggregation/map_reduce_helper",
  "aggregation/dsl",

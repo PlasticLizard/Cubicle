@@ -14,8 +14,8 @@ module Cubicle
 #    end
 
     def expression
-      return super unless aggregation_method == :count
-      "((#{super}) ? 1 : 0)"
+      return "((#{super}) ? 1 : 0)" if aggregation_method == :count && options[:distinct] != true
+      super
     end
 
     def default_aggregation_method

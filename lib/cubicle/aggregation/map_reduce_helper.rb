@@ -22,14 +22,28 @@ MAP
   function(key,values){
 	var output = {};
 	values.forEach(function(doc){
-        for(var key in doc){
-			if (doc[key] || doc[key] == 0){
-				output[key] = output[key] || 0;
-				output[key]  += doc[key];
+        for(var measure_name in doc){
+            var measure_value = doc[measure_name];
+            if (measure_value || measure_value == 0){
+                if (typeof(measure_value) == "number") {
+                  output[measure_name] = output[measure_name] || 0;
+                  output[measure_name] += measure_value;
+                }
+                else if (measure_value) {
+                  output[measure_name] = output[measure_name] || {}
+                  if (typeof(measure_value)=="string")
+                    output[measure_name][measure_value] = true;
+                  if (typeof(measure_value)=="object") {
+                    for (var unique in measure_value){
+                      if (typeof(unique)=="string"){output[measure_name][unique]=true;}
+                    }
+                  }
+
+                }
 			}
 		}
-	  });
-	return output;
+	  });     
+	  return output;
   }
 REDUCE
         end
@@ -39,12 +53,15 @@ REDUCE
     function(key,value)
     {
 
-     #{  (query.measures.select{|m|m.aggregation_method == :average}).map do |m|
+          #{(query.measures.select{|m|m.aggregation_method == :average}).map do |m|
             "value.#{m.name}=value.#{m.name}/value.#{m.name}_count;"
           end.join("\n")}
+
           #{  (query.measures.select{|m|m.aggregation_method == :calculation}).map do|m|
             "value.#{m.name}=#{m.expression};";
           end.join("\n")}
+
+
     return value;
     }
 FINALIZE
