@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cubicle}
-  s.version = "0.1.11"
+  s.version = "0.1.12"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nathan Stults"]
-  s.date = %q{2010-04-12}
+  s.date = %q{2010-04-15}
   s.description = %q{Cubicle provides a dsl and aggregation caching framework for automating the generation, execution and caching of map reduce queries when using MongoDB in Ruby. Cubicle also includes a MongoMapper plugin for quickly performing ad-hoc, multi-level group-by queries against a MongoMapper model.}
   s.email = %q{hereiam@sonic.net}
   s.extra_rdoc_files = [
@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
      "lib/cubicle/aggregation.rb",
      "lib/cubicle/aggregation/ad_hoc.rb",
      "lib/cubicle/aggregation/aggregation_manager.rb",
+     "lib/cubicle/aggregation/aggregation_view.rb",
      "lib/cubicle/aggregation/dsl.rb",
      "lib/cubicle/aggregation/map_reduce_helper.rb",
      "lib/cubicle/bucketized_dimension.rb",
