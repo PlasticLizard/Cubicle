@@ -57,9 +57,7 @@ REDUCE
             "value.#{m.name}=value.#{m.name}/value.#{m.name}_count;"
           end.join("\n")}
 
-          #{  (query.measures.select{|m|m.aggregation_method == :calculation}).map do|m|
-            "value.#{m.name}=#{m.expression};";
-          end.join("\n")}
+
 
 
     return value;

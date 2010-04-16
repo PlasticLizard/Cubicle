@@ -48,13 +48,14 @@ module Cubicle
       def extract_data(data)
         data.each do |result|
           new = result.dup
-          #The ugly way to resolve distinct counts
-          if (new["value"])
-            new["value"].each do |k,v|
-              new["value"][k] = v.length if v && v.is_a?(Hash)    
-            end
-          end
           self << OrderedHashWithIndifferentAccess.new(new.delete("_id").merge(new.delete("value")))
+          #these should be processed first, because they are often used as parts of the other calc measures
+          measures.select{|m|m.distinct_count?}.each do |m|
+            m.finalize_aggregation(self[-1])
+          end
+          measures.select{|m|!m.distinct_count?}.each do |m|
+            m.finalize_aggregation(self[-1])
+          end
         end
       end
     end

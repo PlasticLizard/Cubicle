@@ -22,6 +22,10 @@ module Cubicle
       :count
     end
 
+    def distinct_count?
+      aggregation_method==:count && options[:distinct]
+    end
+
     def aggregate(values)
       return nil if values.blank?
       sum = values.inject(0){|total,val|total+val}
@@ -29,6 +33,9 @@ module Cubicle
     end
 
     def finalize_aggregation(aggregation)
+      aggregation[name] = aggregation[name].length if distinct_count? &&
+              aggregation[name] &&
+              aggregation[name].respond_to?(:length)
       aggregation
     end
   end

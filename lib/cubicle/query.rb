@@ -125,13 +125,14 @@ module Cubicle
 
       #when selecting from a cached map_reduce query, we no longer want to count rows, but aggregate
       #the pre-calculated counts stored in the cached collection. Therefore, any :counts become :sum
-      aggregation = measure.aggregation_method == :count ? :sum : measure.aggregation_method
+      aggregation = (measure.aggregation_method == :count && measure.options[:distinct] != true) ?
+               :sum : measure.aggregation_method
       expression = "this.value.#{measure.name}"
       if (aggregation == :average)
         count_field = expression + "_count"
         expression = "#{expression}*#{count_field}"
       end
-      Cubicle::Measure.new(measure.name, :expression=>expression,:aggregation_method=>aggregation)
+      Cubicle::Measure.new(measure.name, :expression=>expression,:aggregation_method=>aggregation, :distinct=>measure.distinct_count?)
     end
 
     def unalias(*name_or_names)

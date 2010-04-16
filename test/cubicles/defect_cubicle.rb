@@ -22,6 +22,7 @@ class DefectCubicle
 
   #calculated fields
   ratio :preventable_pct,  :preventable_defects, :total_defects
+  ratio :distinct_ratio,   :distinct_products,   :total_defects 
 
   #durations
   average_duration :ms1 => :ms2
