@@ -1,3 +1,10 @@
+==0.1.14
+  *Incorporated the Mustache templating library into aggregation definitions allowing expression to reference previously
+   defined dimensions, measures, or named expressions (using the syntax: define :expression_name, 'this.my_expression != "that"')
+   Allows for definitions such as this:  avg :average_happy_defects, :expression=>'{{defects}} && this.type=="Happy"'
+   Also available is 'time_now' to represent the Ruby's Time.now in the form of a javascript date, so '{{time_now}}' will
+   become 'new Date(2342342)' where 2342342 is Time.now.to_i
+
 ==0.1.13
   *Previous feature broke ratios. Fixed now.
 

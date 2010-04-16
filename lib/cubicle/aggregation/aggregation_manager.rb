@@ -142,10 +142,12 @@ module Cubicle
       end
 
       def aggregate(query,options={})
+        view = AggregationView.new(aggregation)
+
         map, reduce = MapReduceHelper.generate_map_function(query), MapReduceHelper.generate_reduce_function
-        map = Mustache.render(map, AggregationView.new(aggregation)) if aggregation
+
         options[:finalize] = MapReduceHelper.generate_finalize_function(query)
-        options["query"] = prepare_filter(query,options[:where] || {})
+        options["query"] = expand_template(prepare_filter(query,options[:where] || {}),view)
 
         query.source_collection_name = options.delete(:source_collection) || query.source_collection_name || aggregation.source_collection_name
 
@@ -157,11 +159,21 @@ module Cubicle
         #This is defensive - some tests run without ever initializing any collections
         return [] unless database.collection_names.include?(query.source_collection_name)
 
-        result = database[query.source_collection_name].map_reduce(map,reduce,options)
+        result = database[query.source_collection_name].map_reduce(expand_template(map, view),reduce,options)
 
         ensure_indexes(target_collection,query.dimension_names) if target_collection
 
         result
+      end
+
+      def expand_template(template,view)
+        return "" unless template
+        return Mustache.render(template,view) if template.is_a?(String)
+        if (template.is_a?(Hash))
+          template.each {|key,val|template[key] = expand_template(val,view)}
+          return template
+        end
+        template
       end
 
       def prepare_filter(query,filter={})

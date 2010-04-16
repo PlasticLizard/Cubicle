@@ -18,7 +18,11 @@ module Cubicle
       def dimension(*args)
         dimensions << Cubicle::Dimension.new(*args)
         dimensions[-1]
-      end      
+      end
+
+      def named_expressions
+        return @named_expressions ||= OrderedHashWithIndifferentAccess.new 
+      end
 
       def dimensions(*args)
         return (@dimensions ||= Cubicle::MemberList.new) if args.length < 1
@@ -119,6 +123,10 @@ module Cubicle
       alias time_dimension= time_dimension
       alias date time_dimension
       alias time time_dimension
+
+      def define(name,expression)
+        named_expressions[name] = expression 
+      end
     end
   end
 end

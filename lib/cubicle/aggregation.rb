@@ -33,8 +33,8 @@ module Cubicle
     def find_member(member_name)
       @dimensions[member_name] ||
               @measures[member_name]
-    end    
-
+    end
+        
     def query(*args,&block)
         options = args.extract_options!
         query = Cubicle::Query.new(self)

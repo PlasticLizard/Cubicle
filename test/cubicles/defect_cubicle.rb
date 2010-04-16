@@ -1,22 +1,24 @@
 class DefectCubicle
   extend Cubicle::Aggregation
 
+  define     :preventable, "this.root_cause != 'act_of_god'"
+  define     :product_name, "this.product.name"
+
   date       :manufacture_date,  :field_name=>'manufacture_date', :alias=>:date
   dimension  :month,             :expression=>'this.manufacture_date.substring(0,7)'
   dimension  :year,              :expression=>'this.manufacture_date.substring(0,4)'
 
   dimension  :manufacture_time
 
-  dimension  :product,           :field_name=>'product.name'
+  dimension  :product,           :expression=>'{{product_name}}'
   dimension  :region,            :field_name=>'plant.address.region'
 
   dimensions :operator, :outcome
-
   
   count :total_defects,          :field_name=>'defect_id'
-  count :distinct_products,      :field_name=>'product.name', :distinct=>true
-  count :preventable_defects,    :expression=>'this.root_cause != "act_of_god"'
-  count :conditioned_preventable,:expression=>'1.0', :condition=>'this.root_cause != "act_of_god"'
+  count :distinct_products,      :expression=>'{{product}}', :distinct=>true
+  count :preventable_defects,    :expression=>'{{preventable}}'
+  count :conditioned_preventable,:expression=>'1.0', :condition=>'{{preventable}}'
   sum   :total_cost,             :field_name=>'cost'
   avg   :avg_cost,               :field_name=>'cost'
 
