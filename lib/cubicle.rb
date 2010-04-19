@@ -3,6 +3,7 @@ require "active_support"
 require "mongo"
 require "logger"
 require "mustache"
+require "time"
 
 dir = File.dirname(__FILE__)
 ["mongo_environment",

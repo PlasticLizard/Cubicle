@@ -10,6 +10,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
       context "without arguments" do
         setup do
           @results = DefectCubicle.query
+          Time.now = "4/1/2010"
         end
         should "return a collection of appropriate aggregated values based on the cubicle parameters" do
           puts @results.inspect
@@ -32,6 +33,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_equal 1, @results[0]["distinct_products"]
           assert_equal 1/1, @results[0]["distinct_ratio"]
           assert_equal 1, @results[0]["inevitable_defects"]
+          assert_equal 0, @results[0]["defects_this_year"]
 
           assert_equal "2010-01-01", @results[1]["manufacture_date"]
           assert_equal "2010-01", @results[1]["month"]
@@ -50,6 +52,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_equal 1, @results[1]["distinct_products"]
           assert_equal 1.0/2.0, @results[1]["distinct_ratio"]
           assert_equal 1, @results[1]["inevitable_defects"]
+          assert_equal 2, @results[1]["defects_this_year"]
 
           assert_equal "2010-01-05", @results[2]["manufacture_date"]
           assert_equal "2010-01", @results[2]["month"]
@@ -68,6 +71,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_equal 1, @results[2]["distinct_products"]
           assert_equal 1/1, @results[2]["distinct_ratio"]
           assert_equal 0, @results[2]["inevitable_defects"]
+          assert_equal 1, @results[2]["defects_this_year"]
 
           assert_equal "2010-02-01", @results[3]["manufacture_date"]
           assert_equal "2010-02", @results[3]["month"]
@@ -86,6 +90,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           assert_equal 1, @results[3]["distinct_products"]
           assert_equal 1/1, @results[3]["distinct_ratio"]
           assert_equal 0, @results[3]["inevitable_defects"]
+          assert_equal 1, @results[3]["defects_this_year"]
         end
       end
 

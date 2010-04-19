@@ -441,5 +441,31 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal 2, results[0]["distinct_products"]
       end
     end
+    context "Aggregation level 'define' calls" do
+      should "override the default of Time.now" do
+        results = DefectCubicle.query do
+          transient!
+          select :year, :defects_this_year
+        end
+        puts results.inspect
+        assert_equal 2, results.length
+        assert_equal 0, results[0].defects_this_year
+        assert_equal 4, results[1].defects_this_year  
+      end
+    end
+    context "Query level 'define' calls" do
+      should "override the defaults" do
+        results = DefectCubicle.query do
+          transient!
+          define :time_now, "2009-01-01".to_time
+
+          select :year, :defects_this_year
+        end
+        puts results.inspect
+        assert_equal 2, results.length
+        assert_equal 1, results[0].defects_this_year
+        assert_equal 0, results[1].defects_this_year
+      end
+    end
   end
 end

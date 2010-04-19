@@ -112,6 +112,10 @@ module Cubicle
         self
       end
       alias alias_members alias_member
+
+      def define(expression_name,value)
+        @named_expressions[expression_name] = value
+      end
     end
   end
 

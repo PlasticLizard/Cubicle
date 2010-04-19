@@ -3,6 +3,7 @@ class DefectCubicle
 
   define     :preventable, "this.root_cause != 'act_of_god'"
   define     :product_name, "this.product.name"
+  define     :current_year, "'{{date_today_iso}}'.substring(0,4)"
 
   date       :manufacture_date,  :field_name=>'manufacture_date', :alias=>:date
   dimension  :month,             :expression=>'this.manufacture_date.substring(0,7)'
@@ -19,6 +20,7 @@ class DefectCubicle
   count :distinct_products,      :expression=>'{{product}}', :distinct=>true
   count :preventable_defects,    :expression=>'{{preventable}}'
   count :conditioned_preventable,:expression=>'1.0', :condition=>'{{preventable}}'
+  count :defects_this_year,      :expression=>'{{year}} == {{current_year}}'
   sum   :total_cost,             :field_name=>'cost'
   avg   :avg_cost,               :field_name=>'cost'
 

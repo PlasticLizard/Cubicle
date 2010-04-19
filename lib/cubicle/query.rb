@@ -2,7 +2,7 @@ module Cubicle
   class Query
     include Dsl
 
-    attr_reader  :time_period, :transient, :aggregation
+    attr_reader  :time_period, :transient, :aggregation, :named_expressions
     attr_accessor :source_collection_name
     
     def initialize(aggregation)
@@ -19,6 +19,7 @@ module Cubicle
       @from_date_filter = "$gte"
       @to_date_filter = "$lte"
       @query_aliases=HashWithIndifferentAccess.new
+      @named_expressions=HashWithIndifferentAccess.new
     end
 
     def clone
