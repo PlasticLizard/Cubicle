@@ -104,6 +104,10 @@ module Cubicle
         measures << Ratio.new(member_name, numerator, denominator)
       end
 
+      def difference(member_name, left, right)
+        measures << Difference.new(member_name,left,right)
+      end
+
       def bucketize(dimension_name, source_measure_name, bucket_range, options={}, &block)
         source_measure = measures[source_measure_name]
         raise "#{source_measure_name} does not appear to be a valid measure name. bucketize/categorize declarations must be placed AFTER any measures it uses have been defined." unless source_measure

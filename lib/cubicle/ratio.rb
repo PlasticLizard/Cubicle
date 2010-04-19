@@ -24,5 +24,9 @@ module Cubicle
       aggregation[name] = n > 0 ? n/d : 0
     end
 
+    def depends_on
+      [numerator,denominator]
+    end
+
   end
 end

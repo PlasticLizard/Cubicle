@@ -14,6 +14,7 @@ dir = File.dirname(__FILE__)
  "dimension",
  "bucketized_dimension",
  "ratio",
+ "difference",
  "duration",
  "query/dsl/time_intelligence",
  "query/dsl",
@@ -48,4 +49,15 @@ module Cubicle
   def self.logger
     @logger ||= (Cubicle.mongo.logger || Logger.new("cubicle.log"))
   end 
+end
+
+#Turn off HTML escaping in Mustache
+class Mustache
+  class Generator
+    alias_method :off_utag, :on_utag
+    alias_method :off_etag, :on_etag
+
+    alias_method :on_utag, :off_etag
+    alias_method :on_etag, :off_utag
+  end
 end

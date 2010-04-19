@@ -1,3 +1,10 @@
+==0.1.15
+  *Added 'difference' calculated measure to aggregation DSL, used in the same was as 'ratio' - so, in your aggregation
+  definition, you can do 'difference :big_diff, :measure_one, :measure_two'
+  and the value of :big_diff will be measure_one - measure_two. Also monkey patched Mustache (per suggestion in the
+  mailing list) to turn of HTML escaping, so that the triple-curly syntax should not be required when using operators
+  in templated expressions.
+
 ==0.1.14
   *Incorporated the Mustache templating library into aggregation definitions allowing expression to reference previously
    defined dimensions, measures, or named expressions (using the syntax: define :expression_name, 'this.my_expression != "that"')

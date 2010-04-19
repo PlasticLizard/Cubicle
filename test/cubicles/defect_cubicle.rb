@@ -23,9 +23,9 @@ class DefectCubicle
   avg   :avg_cost,               :field_name=>'cost'
 
   #calculated fields
-  ratio :preventable_pct,  :preventable_defects, :total_defects
-  ratio :distinct_ratio,   :distinct_products,   :total_defects 
-
+  ratio      :preventable_pct,  :preventable_defects, :total_defects
+  ratio      :distinct_ratio,   :distinct_products,   :total_defects
+  difference :inevitable_defects, :total_defects, :preventable_defects
   #durations
   average_duration :ms1 => :ms2
   total_duration :ms2 => :ms3

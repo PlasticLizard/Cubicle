@@ -14,5 +14,9 @@ module Cubicle
       []
     end
 
+    def depends_on
+      []
+    end
+
   end
 end

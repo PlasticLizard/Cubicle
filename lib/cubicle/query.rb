@@ -116,8 +116,8 @@ module Cubicle
       #causes a bug down the line, we may need a specific :all_members
       #flag rather than the implicit "no selections means all members"
       #shortcut.
-      if (measure.is_a?(Cubicle::Ratio))
-        select measure.numerator, measure.denominator unless all_measures?
+      if (measure.kind_of?(Cubicle::CalculatedMeasure))
+        select *measure.depends_on unless all_measures? || measure.depends_on.blank?
         return measure
       end
 
