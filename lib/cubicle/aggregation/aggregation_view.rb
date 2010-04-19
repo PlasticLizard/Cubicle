@@ -5,7 +5,7 @@ module Cubicle
 
       def initialize(aggregation,query)
 
-        time_now = (query.named_expressions[:time_now] || Time.now).to_time
+        time_now = (query.named_expressions.delete(:time_now) || Time.now).to_time
 
         self[:time_now] = "new Date(#{time_now.to_i*1000})"
         self[:date_today] = "new Date(#{time_now.to_date.to_time.to_i*1000})"
