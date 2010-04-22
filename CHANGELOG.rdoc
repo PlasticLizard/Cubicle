@@ -1,3 +1,6 @@
+==0.1.18
+  *Bug fixes
+
 ==0.1.16
   *Added a set of default constants for expression templates, such as date_today, date_today_iso, date_today_utc_iso, etc.
   Also added the 'define' method to the query DSL (instead of simply the aggregation DSL) so that you can either define new

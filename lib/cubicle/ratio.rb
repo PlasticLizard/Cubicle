@@ -16,12 +16,12 @@ module Cubicle
       n = aggregation[numerator].to_f
       d = aggregation[denominator].to_f
 
-      #If the numerator is greater than zero, when we'll do the division
+      #If the numerator is not zero, when we'll do the division
       #even if d is zero. This will result in a NaN, which indicates something
       #wrong with the data, which is fine. However, if the numerator is zero,
       #then maybe there just isn't any data, in which case NaN is pretty pessimistic -
       #we'll return 0 instead in this case.
-      aggregation[name] = n > 0 ? n/d : 0
+      aggregation[name] = n != 0 ? n/d : 0
     end
 
     def depends_on
