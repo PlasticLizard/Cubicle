@@ -12,6 +12,11 @@ class Time
   end
 
   def succ
+    self.step_by = :day if step_by.to_sym == :date
+    valid_steps = [:second,:minute,:hour,:week,:day,:month,:year]
+    valid_steps += valid_steps.map{|s|s.to_s.pluralize.to_sym}
+    raise "Invalid 'step_by' speficication. Was #{step_by} but must be one of #{valid_steps.inspect}" unless valid_steps.include?(step_by.to_sym)
+
     next_date = advance(step_by.to_s.pluralize.to_sym=>1)
     next_date.step_by = self.step_by
     next_date
@@ -32,6 +37,11 @@ class Date
   end
 
   def succ
+    step_by = :day if step_by.to_sym == :date
+    valid_steps = [:second,:minute,:hour,:week,:days,:month,:year]
+    valid_steps += valid_steps.map{|s|s.to_s.pluralize.to_sym}
+    raise "Invalid 'step_by' speficication. Was #{step_by} but must be one of #{valid_steps.inspect}" unless valid_steps.include?(step_by.to_sym)
+
     next_date = advance(step_by.to_s.pluralize.to_sym=>1)
     next_date.step_by = self.step_by
     next_date

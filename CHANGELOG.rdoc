@@ -1,3 +1,6 @@
+==0.1.19
+   *Fixed bug that caused cubicle to hang when grouping by days
+
 ==0.1.18
   *Bug fixes
 

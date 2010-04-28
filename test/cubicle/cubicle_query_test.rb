@@ -467,5 +467,18 @@ class CubicleQueryTest < ActiveSupport::TestCase
         assert_equal 0, results[1].defects_this_year
       end
     end
+    context "Grouping by day" do
+      should "not cause the system to hang" do
+        Time.now = "2010-01-01"
+        results = DefectCubicle.query do
+          select :defects_this_year
+          by :date
+          for_the_last 5.days
+        end
+        puts results.inspect
+        assert_not_nil results
+      end
+
+    end
   end
 end
