@@ -136,9 +136,14 @@ module Cubicle
       def ensure_indexes(collection_name,dimension_names)
         col = database[collection_name]
         #an index for each dimension
-        dimension_names.each {|dim|col.create_index([dim,Mongo::ASCENDING])}
-        #and a composite
-        col.create_index(dimension_names)
+        dimension_names.each {|dim|col.create_index(dim)}
+        #The below composite isn't working, I think because of too many fields being
+        #indexed. After some thought, I think maybe this is overkill anyway. However,
+        #there should be SOME way to build composite indexes for common queries,
+        #so more thought is needed. Maybe cubicle can compile and analyze query
+        #stats and choose indexes automatically based on usage. For now, however,
+        #I'm just going to turn the thing off.
+        #col.create_index(dimension_names.map{|dim|[dim,1]})
       end
 
       def aggregate(query,options={})
