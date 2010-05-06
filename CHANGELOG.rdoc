@@ -1,3 +1,8 @@
+==0.1.21
+  *Added metadata tables in the database for cubicle to manage aggregation info. This was necessary because previously
+  I was trying to overload the collection name with metadata, which was making the names longer than MongoDb could support
+  and causing errors. This change will enable richer monitoring and profiling and optimization in the near future.
+
 ==0.1.20
   *Updated to work with mongo driver 1.0 (and therefore latest versions of MongoMapper)
 

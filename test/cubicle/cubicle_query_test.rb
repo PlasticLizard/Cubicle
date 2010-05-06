@@ -25,7 +25,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
         select :product, :total_defects
       end
       query.execute()
-      assert_equal "defect_cubicles_cubicle", query.source_collection_name
+      assert query.source_collection_name =~ /cubicle.aggregation.DefectCubicle._+/
     end
     should "Select dimensions in the by clause" do
       query_results = DefectCubicle.query do

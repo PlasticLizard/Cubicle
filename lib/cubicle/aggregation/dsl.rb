@@ -11,7 +11,7 @@ module Cubicle
       def target_collection_name(collection_name = nil)
         return nil if transient?
         return @target_name = collection_name if collection_name
-        @target_name ||= "#{name.blank? ? source_collection_name : name.underscore.pluralize}_cubicle"
+        @target_name ||= "cubicle.fact.#{name.blank? ? source_collection_name : name.underscore}"
       end
       alias target_collection_name= target_collection_name
 

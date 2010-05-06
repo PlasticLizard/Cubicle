@@ -25,6 +25,8 @@ dir = File.dirname(__FILE__)
  "data/level",
  "data/hierarchy",
  "data/table",
+ "aggregation/aggregation_metadata",
+ "aggregation/cubicle_metadata",
  "aggregation/aggregation_view",
  "aggregation/aggregation_manager",
  "aggregation/map_reduce_helper",
