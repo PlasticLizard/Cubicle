@@ -31,6 +31,7 @@ dir = File.dirname(__FILE__)
  "aggregation/aggregation_manager",
  "aggregation/map_reduce_helper",
  "aggregation/dsl",
+ "aggregation/profiler",
  "aggregation",
  "aggregation/ad_hoc",
  "date_time",

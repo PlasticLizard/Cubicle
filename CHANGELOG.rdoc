@@ -1,3 +1,9 @@
+==0.1.22
+  *Added profiler, which is off by default, that will profile every operation performed by the aggregation engine
+  in a collection called cubicle.profiler. It uses a capped collection size at, by default, 250mb, but this can
+  be configured. Also added basic metadata table for overall aggregation definitions that will record the last processing
+  time, along with the duration of the processing job, in the collection cubicle.metadata
+
 ==0.1.21
   *Added metadata tables in the database for cubicle to manage aggregation info. This was necessary because previously
   I was trying to overload the collection name with metadata, which was making the names longer than MongoDb could support

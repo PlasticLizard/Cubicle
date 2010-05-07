@@ -2,11 +2,12 @@ module Cubicle
   module Aggregation
     class AggregationManager
 
-      attr_reader :aggregation, :metadata
+      attr_reader :aggregation, :metadata, :profiler
 
       def initialize(aggregation)
         @aggregation = aggregation
         @metadata = Cubicle::Aggregation::CubicleMetadata.new(aggregation)
+        @profiler = Cubicle::Aggregation::Profiler.new(aggregation)
       end
 
       def database
@@ -35,7 +36,7 @@ module Cubicle
         filter = {}
 
         if query == aggregation || query.transient?
-          reduction = aggregate(query,options)
+          reduction = aggregate(query,options.merge(:reason=>"Transient query"))
         else
           process_if_required
           agg_data = aggregation_for(query)
@@ -45,42 +46,46 @@ module Cubicle
           if query.all_dimensions? || (agg_data.member_names - query.member_names - [:all_measures]).blank?
             filter = prepare_filter(query,options[:where] || {})
           else
-            reduction = aggregate(query,:source_collection=>agg_data.target_collection_name)
+            reduction = aggregate(query,:source_collection=>agg_data.target_collection_name, :reason=>"Last mile reduction - source aggregation has too many members")
           end
         end
 
         if reduction.blank?
           Cubicle::Data::Table.new(query,[],0)
         else
-          count = reduction.count
-          results = reduction.find(filter,find_options).to_a
-          reduction.drop if reduction.name =~ /^tmp.mr.*/
-          Cubicle::Data::Table.new(query, results, count)
+
+          @profiler.measure(:find, :source=>reduction.name, :reason=>"Fetch final query results") do
+            count = reduction.count
+            results = reduction.find(filter,find_options).to_a
+            reduction.drop if reduction.name =~ /^tmp.mr.*/
+            Cubicle::Data::Table.new(query, results, count)
+          end
+
         end
 
       end
 
       def process(options={})
-        Cubicle.logger.info "Processing #{aggregation.name} @ #{Time.now}"
-        start = Time.now
-        expire!
-        aggregate(aggregation,options)
-        #Sort desc by length of array, so that larget
-        #aggregations are processed first, hopefully increasing efficiency
-        #of the processing step
-        aggregation.aggregations.sort!{|a,b|b.length<=>a.length}
-        aggregation.aggregations.each do |member_list|
-          agg_start = Time.now
-          aggregation_for(aggregation.query(:defer=>true){select member_list})
-          Cubicle.logger.info "#{aggregation.name} aggregation #{member_list.inspect} processed in #{Time.now-agg_start} seconds"
+        @metadata.update_processing_stats do
+          expire!
+          aggregate(aggregation,options.merge(:reason=>"Processing fact collection"))
+          #Sort desc by length of array, so that larget
+          #aggregations are processed first, hopefully increasing efficiency
+          #of the processing step
+          aggregation.aggregations.sort!{|a,b|b.length<=>a.length}
+          aggregation.aggregations.each do |member_list|
+            agg_start = Time.now
+            aggregation_for(aggregation.query(:defer=>true){select member_list})
+            Cubicle.logger.info "#{aggregation.name} aggregation #{member_list.inspect} processed in #{Time.now-agg_start} seconds"
+          end
         end
-        duration = Time.now - start
-        Cubicle.logger.info "#{aggregation.name} processed @ #{Time.now}in #{duration} seconds."
       end
 
       def expire!
-        collection.drop
-        @metadata.expire!
+        @profiler.measure(:expire_aggregations, :reason=>"Expire aggregations") do
+          collection.drop
+          @metadata.expire!
+        end
       end
 
       def aggregate(query,options={})
@@ -104,11 +109,22 @@ module Cubicle
           return []
         end
 
-        result = database[query.source_collection_name].map_reduce(expand_template(map, view),reduce,options)
+        reason = options.delete(:reason) || "Unknown"
+        agg_info= options.delete(:aggregation_info)
 
-        ensure_indexes(target_collection,query.dimension_names) if target_collection
+        result = map_reduce(query.source_collection_name,expand_template(map, view),reduce,options)
 
-        result
+        @profiler.record_map_reduce_result(query,options,result,reason,agg_info)
+
+        @profiler.measure(:create_indexes, :target_collection=>options[:out] || "transient", :reason=>:finalize_aggregation) do
+          ensure_indexes(target_collection,query.dimension_names)
+        end if target_collection && !query.transient?
+
+        #A bug, possibly in Mongo, does not produce a count on MR collections
+        #sometimes, so we'll just add it from the result.
+        output = database[result["result"]]
+        output.instance_eval "def count; #{result["counts"]["output"]}; end"
+        output
       end
 
       protected
@@ -215,6 +231,29 @@ module Cubicle
 
       def quote_if_required(filter_value)
         (filter_value.is_a?(String) || filter_value.is_a?(Symbol)) ? "'#{filter_value}'" :filter_value
+      end
+
+      #this is just the Mongo driver's implementation of the MapReduce
+      #method, but instead of returning the resulting collection,
+      #I'm returning the full 'results' so that I can capture
+      #the delicious stats contained within its delicate hash shell
+      def map_reduce(source_collection_name,map, reduce, opts={})
+
+        map    = BSON::Code.new(map) unless map.is_a?(BSON::Code)
+        reduce = BSON::Code.new(reduce) unless reduce.is_a?(BSON::Code)
+
+        hash = OrderedHash.new
+        hash['mapreduce'] = source_collection_name
+        hash['map'] = map
+        hash['reduce'] = reduce
+        hash.merge! opts
+
+        result = database.command(hash)
+        unless result["ok"] == 1
+          raise Mongo::OperationFailure, "map-reduce failed: #{result['errmsg']}"
+        end
+
+        result
       end
 
     end

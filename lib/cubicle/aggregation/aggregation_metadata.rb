@@ -56,7 +56,8 @@ module Cubicle
           unless @attributes
             @attributes = HashWithIndifferentAccess.new({:aggregation=>@cubicle_metadata.aggregation.name,
                                                          :member_names=>member_names,
-                                                         :document_count=>-1})
+                                                         :document_count=>-1,
+                                                         :created_at=>Time.now.utc})
 
             #materialize the aggregation, and, if the operation was successful,
             #register it as available for use by future queries
@@ -99,10 +100,20 @@ module Cubicle
         @attributes["document_count"]
       end
 
+      def method_missing(sym,*args)
+        if (@attributes.keys.include?(sym.to_s))
+          @attributes[sym.to_s]
+        else
+          super(sym,*args)
+        end
+      end
+
       protected
-      def update_document_count!(new_doc_count)
-        self.class.collection.update({:_id=>@attributes[:_id]}, "$set"=>{:document_count=>new_doc_count})
+      def update_document_stats!(new_doc_count)
+        timestamp = Time.now.utc
+        self.class.collection.update({:_id=>@attributes[:_id]}, "$set"=>{:document_count=>new_doc_count, :updated_at=>timestamp})
         @attributes["document_count"]=new_doc_count
+        @attributes["updated_at"] = timestamp
       end
 
       def materialize!
@@ -111,9 +122,11 @@ module Cubicle
                                                            :source_collection=>source_collection_name,
                                                            :defer=>true)
           self.collection = @cubicle_metadata.aggregation.aggregator.aggregate(exec_query,
-                                                                               :target_collection=>target_collection_name)
+                                                                               :target_collection=>target_collection_name,
+                                                                               :reason=>"Materializing intermediate aggregation",
+                                                                               :aggregation_info=>self)
         end
-        update_document_count!(@collection.count) unless @collection.blank?
+        update_document_stats!(@collection.count) unless @collection.blank?
       end
 
     end
