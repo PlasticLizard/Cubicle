@@ -20,7 +20,7 @@ module Cubicle
         def collection
           @@collection_name ||= "cubicle.profiler"
           unless Cubicle.mongo.database.collection_names.include?(@@collection_name)
-            @@collection = Cubicle.mongo.database.create_collection(@@collection_name, :capped=>true, :size=>max_size_in_mb * 1000)
+            @@collection = Cubicle.mongo.database.create_collection(@@collection_name, :capped=>true, :size=>max_size_in_mb * 1000000)
           else
             @@collection ||= Cubicle.mongo.database[@@collection_name]
           end

@@ -1,3 +1,6 @@
+==0.1.23
+ *Fixed profiler's capped collection sizing bug (off by x1000)
+
 ==0.1.22
   *Added profiler, which is off by default, that will profile every operation performed by the aggregation engine
   in a collection called cubicle.profiler. It uses a capped collection size at, by default, 250mb, but this can
