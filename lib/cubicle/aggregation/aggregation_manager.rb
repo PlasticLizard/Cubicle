@@ -54,7 +54,7 @@ module Cubicle
           Cubicle::Data::Table.new(query,[],0)
         else
 
-          @profiler.measure(:find, :source=>reduction.name, :reason=>"Fetch final query results") do
+          @profiler.measure(:find, :source=>reduction.name, :reason=>"Fetch final query results", :query=>find_options) do
             count = reduction.count
             results = reduction.find(filter,find_options).to_a
             reduction.drop if reduction.name =~ /^tmp.mr.*/

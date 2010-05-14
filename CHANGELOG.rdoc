@@ -1,3 +1,6 @@
+==0.1.24
+  *Added more detail to the profile for the 'find' action
+
 ==0.1.23
  *Fixed profiler's capped collection sizing bug (off by x1000)
 
