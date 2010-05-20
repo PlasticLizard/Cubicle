@@ -1,7 +1,6 @@
 class OrderedHashWithIndifferentAccess < OrderedHash
-  def initialize(initial_data={},&block)
+  def initialize(initial_data={})
     merge!(initial_data.stringify_keys)
-    super(&block) if block
   end
 
 

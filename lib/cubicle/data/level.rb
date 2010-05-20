@@ -23,16 +23,15 @@ module Cubicle
         default_val = opts[:default] || @missing_member_default || 0
 
         self.values.inject([]) do |output, data|
-          data.inject(output) do |flattened, value|
-            value.missing_member_default = default_val if value.respond_to?(:missing_member_default)
+          value = data.measure_values
+          value.missing_member_default = default_val if value.respond_to?(:missing_member_default)
 
-            if block_given?
-              flat_val = block.arity == 1 ? (yield value) : (value.instance_eval(&block))
-            end
-            flat_val ||= value[member_name] if member_name && value.include?(member_name)
-            flat_val ||= default_val
-            flattened << flat_val
+          if block_given?
+            flat_val = block.arity == 1 ? (yield value) : (value.instance_eval(&block))
           end
+          flat_val ||= value[member_name] if member_name && value.include?(member_name)
+          flat_val ||= default_val
+          output << flat_val
         end
       end
 
@@ -49,7 +48,7 @@ module Cubicle
       def hierarchy
         parent_level || self
       end
-            
+
       private
       def prepare_level_member(member,member_name,parent_level)
         member.class_eval("include Cubicle::Data::Member")

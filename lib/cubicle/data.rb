@@ -9,7 +9,7 @@ module Cubicle
         measures.each do |measure|
           if (row.include?(measure.name))
             val = row[measure.name]
-            aggregated[measure.name] << val if val.kind_of?(Numeric)
+            (aggregated[measure.name] ||= []) << val if val.kind_of?(Numeric)
           end
         end
       end

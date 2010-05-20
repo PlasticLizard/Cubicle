@@ -26,7 +26,7 @@ module Cubicle
         level = parent_level ? Cubicle::Data::Level.new(dim,parent_level) : Cubicle::Data::Hierarchy.new(dim,data.measures)
         data.each do |tuple|
           member_name = tuple.delete(dim_name.to_s) || "Unknown"
-          level[member_name] << tuple
+          (level[member_name] ||= []) << tuple
         end
 
         level.each do |key,value|

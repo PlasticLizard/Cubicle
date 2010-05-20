@@ -46,7 +46,7 @@ module Cubicle
           if query.all_dimensions? || (agg_data.member_names - query.member_names - [:all_measures]).blank?
             filter = prepare_filter(query,options[:where] || {})
           else
-            reduction = aggregate(query,:source_collection=>agg_data.target_collection_name, :reason=>"Last mile reduction - source aggregation has too many members")
+            reduction = aggregate(query,:source_collection=>agg_data.target_collection_name, :reason=>"Last mile reduction - source aggregation has too many members (#{agg_data.member_names.join(",").inspect})")
           end
         end
 
@@ -57,7 +57,7 @@ module Cubicle
           @profiler.measure(:find, :source=>reduction.name, :reason=>"Fetch final query results", :query=>find_options) do
             count = reduction.count
             results = reduction.find(filter,find_options).to_a
-            reduction.drop if reduction.name =~ /^tmp.mr.*/
+            #reduction.drop if reduction.name =~ /^tmp.mr.*/
             Cubicle::Data::Table.new(query, results, count)
           end
 

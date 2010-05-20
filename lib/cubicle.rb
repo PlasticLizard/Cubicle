@@ -52,7 +52,11 @@ module Cubicle
 
   def self.logger
     @logger ||= (Cubicle.mongo.logger || Logger.new("cubicle.log"))
-  end 
+  end
+
+  def self.clear_temp_tables
+    self.mongo.database.collection_names.each{|cn|self.mongo.database[cn].drop if cn =~ /tmp.mr.mapreduce/i}
+  end
 end
 
 #Turn off HTML escaping in Mustache

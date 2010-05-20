@@ -2,7 +2,7 @@ module Cubicle
   class Query
     include Dsl
 
-    attr_reader  :time_period, :transient, :aggregation, :named_expressions
+    attr_reader  :time_period, :transient, :aggregation, :named_expressions, :query_aliases
     attr_accessor :source_collection_name
     
     def initialize(aggregation)
@@ -104,7 +104,9 @@ module Cubicle
 
     def convert_dimension(dimension)
       return dimension if transient?
-      Cubicle::Dimension.new(dimension.name, :expression=>"this._id.#{dimension.name}")
+      d = Cubicle::Dimension.new(dimension.name, :expression=>"this._id.#{dimension.name}")
+      d.alias_list = dimension.alias_list
+      d
     end
 
     def convert_measure(measure)
@@ -133,7 +135,9 @@ module Cubicle
         count_field = expression + "_count"
         expression = "#{expression}*#{count_field}"
       end
-      Cubicle::Measure.new(measure.name, :expression=>expression,:aggregation_method=>aggregation, :distinct=>measure.distinct_count?)
+      m = Cubicle::Measure.new(measure.name, :expression=>expression,:aggregation_method=>aggregation, :distinct=>measure.distinct_count?)
+      m.alias_list = measure.alias_list
+      m
     end
 
     def unalias(*name_or_names)

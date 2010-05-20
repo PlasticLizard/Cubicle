@@ -1,3 +1,9 @@
+==0.1.25
+  *Modified data extraction to ensure that member and query level aliases are respected in the final result. Also
+  stopped automatically dropping temporary map reduce tables during query execution for performance reasons. Instead,
+  added a static method to the Cubicle module, clear_temp_tables, which can be called at application startup or teardown:
+  Cubicle.clear_temp_tables()
+
 ==0.1.24
   *Added more detail to the profile for the 'find' action
 

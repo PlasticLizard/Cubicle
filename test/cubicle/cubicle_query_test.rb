@@ -65,7 +65,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
       end
       should "return the specified subset of data, including all measures" do
         assert_equal 4, @results.length
-        assert_equal "2009-12-09", @results[0]["manufacture_date"]
+        assert_equal "2009-12-09", @results[0]["date"]
         assert_equal 1, @results[0]["total_defects"]
         assert_equal 0, @results[0]["preventable_defects"]
         assert_equal 0.43, @results[0]["total_cost"]
@@ -163,6 +163,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
       should "return a filtered subset of data" do
         assert_equal 1, @results.length
         assert_equal "2009-12-09", @results[0]["manufacture_date"]
+        assert_equal "2009-12-09", @results[0]["date"]
         assert_equal 1, @results[0]["total_defects"]
         assert_equal 0, @results[0]["preventable_defects"]
         assert_equal 0.43, @results[0]["total_cost"]
@@ -413,6 +414,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
         end
         assert_equal 1, results.length
         assert_equal "Sad Day Moonshine", results[0]["product"]
+        assert_equal "Sad Day Moonshine", results[0]["my_crazy_product"]
         assert_equal 3, results[0]["total_defects"]
         assert_equal 2, results[0]["preventable_defects"]
         assert_equal 2, results[0]["conditioned_preventable"]

@@ -20,14 +20,7 @@ class LevelTest < ActiveSupport::TestCase
       assert_not_equal true, l.leaf_level?
     end
   end
-  context "CubeDataLevel.flatten" do
-    should "Flatten using a provided member name" do
-      l = Cubicle::Data::Level.new(Cubicle::Dimension.new(:happy))
-      l[:a] = [{:a=>3,:b=>2}]
-      l[:b] = [{:a=>4,:b=>1}]
-      assert_equal [2,1], l.flatten(:b)
-    end
-  end
+  
   context "CubeDataLevel[]=" do
     should "Make any passed in value into a configured Cubicle::DataLevel::Member" do
       level  = Cubicle::Data::Level.new(Cubicle::Dimension.new(:baby))

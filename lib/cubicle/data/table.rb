@@ -9,7 +9,7 @@ module Cubicle
         @time_dimension_name = query.time_dimension.name if query.respond_to?(:time_dimension) && query.time_dimension
         @time_period = query.time_period if query.respond_to?(:time_period)
         @time_range = query.time_range if query.respond_to?(:time_range)
-        extract_data(query_results)
+        extract_data(query,query_results)
         @total_count = total_count if total_count
       end
 
@@ -45,16 +45,37 @@ module Cubicle
 
       private
 
-      def extract_data(data)
+      def extract_data(query,data)
         data.each do |result|
           new = result.dup
           self << OrderedHashWithIndifferentAccess.new(new.delete("_id").merge(new.delete("value")))
-          #these should be processed first, because they are often used as parts of the other calc measures
-          measures.select{|m|m.distinct_count?}.each do |m|
-            m.finalize_aggregation(self[-1])
+
+          finalize_aggregations(self[-1])
+
+          apply_aliases(query,self[-1])
+        end
+      end
+
+      def finalize_aggregations(row)
+        #these should be processed first, because they are often used as parts of the other calc measures
+        measures.select{|m|m.distinct_count?}.each do |m|
+          m.finalize_aggregation(row)
+        end
+        measures.select{|m|!m.distinct_count?}.each do |m|
+          m.finalize_aggregation(row)
+        end
+      end
+
+      def apply_aliases(query,row)
+        members = query.dimensions + query.measures
+        members.select{|m|m.alias_list}.each do |m|
+          m.alias_list.each do |m_alias|
+            row[m_alias.to_s] = row[m.name.to_s]
           end
-          measures.select{|m|!m.distinct_count?}.each do |m|
-            m.finalize_aggregation(self[-1])
+        end
+        if (query.respond_to?(:query_aliases) && query.query_aliases)
+          query.query_aliases.each do |key,value|
+            row[key.to_s] = row[value.to_s]
           end
         end
       end
