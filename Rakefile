@@ -21,6 +21,7 @@ begin
 
     s.add_dependency('activesupport', '>= 2.3')
     s.add_dependency('mongo', '>= 0.18.3')
+    s.add_dependency('mustache', '>= 0.10.0')
 
     s.add_development_dependency('shoulda', '2.10.3')
   end

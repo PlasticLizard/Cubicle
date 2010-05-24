@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nathan Stults"]
-  s.date = %q{2010-05-19}
+  s.date = %q{2010-05-24}
   s.description = %q{Cubicle provides a dsl and aggregation caching framework for automating the generation, execution and caching of map reduce queries when using MongoDB in Ruby. Cubicle also includes a MongoMapper plugin for quickly performing ad-hoc, multi-level group-by queries against a MongoMapper model.}
   s.email = %q{hereiam@sonic.net}
   s.extra_rdoc_files = [
@@ -108,15 +108,18 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<activesupport>, [">= 2.3"])
       s.add_runtime_dependency(%q<mongo>, [">= 0.18.3"])
+      s.add_runtime_dependency(%q<mustache>, [">= 0.10.0"])
       s.add_development_dependency(%q<shoulda>, ["= 2.10.3"])
     else
       s.add_dependency(%q<activesupport>, [">= 2.3"])
       s.add_dependency(%q<mongo>, [">= 0.18.3"])
+      s.add_dependency(%q<mustache>, [">= 0.10.0"])
       s.add_dependency(%q<shoulda>, ["= 2.10.3"])
     end
   else
     s.add_dependency(%q<activesupport>, [">= 2.3"])
     s.add_dependency(%q<mongo>, [">= 0.18.3"])
+    s.add_dependency(%q<mustache>, [">= 0.10.0"])
     s.add_dependency(%q<shoulda>, ["= 2.10.3"])
   end
 end
