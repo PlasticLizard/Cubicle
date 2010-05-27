@@ -1,3 +1,7 @@
+==0.1.26,0.1.27
+  *Included mustache dependency in gem (whoops) and fixed a bug where an error in cube processing would replace
+   useful error information with nonsensical error information.
+
 ==0.1.25
   *Modified data extraction to ensure that member and query level aliases are respected in the final result. Also
   stopped automatically dropping temporary map reduce tables during query execution for performance reasons. Instead,

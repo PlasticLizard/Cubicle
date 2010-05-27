@@ -51,7 +51,7 @@ module Cubicle
           #not overwrite the timestamp of the last successful process.
           #If all was well, we want to indicate the now is the last
           #succesful processing of the aggregation.
-          result == :error ? stats[:last_error] = error : stats[:last_processed]=stop
+          result == :error ? stats[:last_error] = error.inspect : stats[:last_processed]=stop
 
           self.class.collection.update({:aggregation=>aggregation.name},#criteria
                                        {"$set"=>stats},#data
