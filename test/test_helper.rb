@@ -22,7 +22,7 @@ module ActiveSupport
     end
     def teardown
       Cubicle.mongo.database.collections.each do |coll|
-        coll.drop
+        coll.drop unless coll.name =~ /(.*\.)?system\..*/
       end
       Time.reset #Return Time.now to its original state
     end

@@ -1,3 +1,5 @@
+==0.1.28
+  *Updated to latest versions of MongoMapper, Mongo & BSON
 ==0.1.26,0.1.27
   *Included mustache dependency in gem (whoops) and fixed a bug where an error in cube processing would replace
    useful error information with nonsensical error information.

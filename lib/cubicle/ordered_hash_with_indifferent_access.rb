@@ -1,4 +1,4 @@
-class OrderedHashWithIndifferentAccess < OrderedHash
+class OrderedHashWithIndifferentAccess < BSON::OrderedHash
   def initialize(initial_data={})
     merge!(initial_data.stringify_keys)
   end
