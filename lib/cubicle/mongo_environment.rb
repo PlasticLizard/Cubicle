@@ -75,6 +75,7 @@ module Cubicle
       handle_passenger_forking if using_passenger
       self.config = config
       connect(environment, options)
+      self
     end
 
     def self.handle_passenger_forking

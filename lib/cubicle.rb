@@ -47,8 +47,23 @@ module Cubicle
     Dir[File.join(directory_path,searcher)].each {|cubicle| require cubicle}
   end
 
+  #Offer an easy way to set cubicle up with configuration independent of mongo mapper even if mongo mapper
+  #has been included. This is useful in a scenario where you want your map reduce activity to happen
+  #on a different server, such as a slave, so that your transactional systems aren't constantly irritated
+  #by all the loud crunching sounds that cubicle makes. Maybe someday map reduce will learn to chew with
+  #its mouth shut. Until then, it may be prudent to let cubicle run on a slave, and mongo mapper on
+  #your master.
+  def self.setup(config,environment,options)
+    @mongo = MongoEnvironment
+    @mongo.setup(config,environment,options)
+  end
+
   def self.mongo
     @mongo ||= defined?(::MongoMapper::Document) ? ::MongoMapper : MongoEnvironment
+  end
+
+  def self.mongo=(mongo_env)
+    @mongo = mongo_env
   end
 
   def self.logger
@@ -58,6 +73,7 @@ module Cubicle
   def self.clear_temp_tables
     self.mongo.database.collection_names.each{|cn|self.mongo.database[cn].drop if cn =~ /tmp.mr.mapreduce/i}
   end
+
 end
 
 #Turn off HTML escaping in Mustache
