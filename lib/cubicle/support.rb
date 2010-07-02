@@ -54,3 +54,21 @@ class Range
     self
   end
 end
+
+module Mongo
+  class Connection
+    def slave_lag
+      args = BSON::OrderedHash.new
+      args["serverStatus"] = 1
+      args["repl"] = 1
+      result = self["admin"].command(args)
+      local_time = result["localTime"]
+      sources = {}
+      result["repl"]["sources"].each do |source|
+        sync_time = source["syncedTo"]["time"]
+        sources[source["host"]] = local_time - sync_time
+      end
+      sources     
+    end
+  end
+end

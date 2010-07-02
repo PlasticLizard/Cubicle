@@ -1,3 +1,9 @@
+#This class represents MongoDB. It is lifted line for line from MongoMapper
+#http://github.com/jnunemaker/mongomapper/blob/master/lib/mongo_mapper.rb
+#Actually, if the MongoMapper gem is loaded, Cubicle will simply use it for
+#providing the MongoEnvironment. However, if MongoMapper isn't loaded,
+#this stuff is still required, so why reinvent the wheel?
+
 module Cubicle
   class MongoEnvironment
 
@@ -25,7 +31,7 @@ module Cubicle
     # @api public
     def self.database
       if @@database_name.blank?
-        raise 'You forgot to set the default database name: MongoMapper.database = "foobar"'
+        raise 'You forgot to set the default database name: Cubicle.mongo.database = "foobar"'
       end
 
       @@database ||= connection.db(@@database_name)
@@ -95,8 +101,4 @@ module Cubicle
     end
   end
 end
-#This class represents MongoDB. It is lifted line for line from MongoMapper
-#http://github.com/jnunemaker/mongomapper/blob/master/lib/mongo_mapper.rb
-#Actually, if the MongoMapper gem is loaded, Cubicle will simply use it for
-#providing the MongoEnvironment. However, if MongoMapper isn't loaded,
-#this stuff is still required, so why reinvent the wheel?
+
