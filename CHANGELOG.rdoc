@@ -1,3 +1,7 @@
+==0.1.29
+  *Enabled custom configuring cubicle's mongo connection even if MongoMapper is present, to allow running map reduce jobs
+  on a slave while MongoMapper operates on the master.
+
 ==0.1.28
   *Updated to latest versions of MongoMapper, Mongo & BSON
 ==0.1.26,0.1.27
