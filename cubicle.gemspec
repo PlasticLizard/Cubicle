@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "cubicle.gemspec",
+     "cubicle.log",
      "lib/cubicle.rb",
      "lib/cubicle/aggregation.rb",
      "lib/cubicle/aggregation/ad_hoc.rb",
