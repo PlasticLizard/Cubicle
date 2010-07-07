@@ -41,6 +41,7 @@ module Cubicle
     def denominator
       #Date math results in milliseconds in javascript
       case self.duration_unit || :seconds
+        when :weeks   then "1000/60/60/24/7.0"
         when :days    then "1000/60/60/24.0"
         when :hours   then "1000/60/60.0"
         when :minutes then "1000/60.0"

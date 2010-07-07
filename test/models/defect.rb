@@ -21,7 +21,7 @@ class Defect
 
   def self.create_duration_test_data
     time = "1/1/2000".to_time
-    t1,t2,t3 = time,time.advance(:days=>1),time.advance(:days=>3)
+    t1,t2,t3,t4 = time,time.advance(:days=>1),time.advance(:days=>3),time.advance(:days=>22)
     Defect.create :defect_id=>"1",
                   :manufacture_date=>"2010-01-01",
                   :manufacture_time=>"2010-01-01".to_time,
@@ -33,9 +33,10 @@ class Defect
                   :root_cause=>:act_of_god,
                   :ms1=>t1,
                   :ms2=>t2,
-                  :ms3=>t3
+                  :ms3=>t3,
+                  :ms4=>t4
 
-    t1,t2,t3 = time, time.advance(:days=>2),time.advance(:days=>4)
+    t1,t2,t3,t4 = time, time.advance(:days=>2),time.advance(:days=>4),time.advance(:days=>28)
     Defect.create :defect_id=>"2",
                   :manufacture_date=>"2010-01-01",
                   :manufacture_time=>"2010-01-01".to_time,
@@ -47,7 +48,8 @@ class Defect
                   :root_cause=>:act_of_god,
                   :ms1=>t1,
                   :ms2=>t2,
-                  :ms3=>t3
+                  :ms3=>t3,
+                  :ms4=>t4
   end
 
   def self.create_test_data

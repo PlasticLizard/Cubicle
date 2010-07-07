@@ -32,6 +32,7 @@ class DefectCubicle
   average_duration :ms1 => :ms2
   total_duration :ms2 => :ms3
   duration  :total_duration, :ms1 => :ms3, :in=>:days
+  duration  :total_duration_in_weeks, :ms1 => :ms4, :in=>:weeks
   duration  :conditional_duration, :ms1 => :ms3, :in=>:days, :condition=>"this.defect_id != 2"
   elapsed   :ms3, :in=>:days
   age_since :avg_time_since_ms3,:ms3, :in=>:days
