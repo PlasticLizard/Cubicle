@@ -1,6 +1,8 @@
 class DefectCubicle
   extend Cubicle::Aggregation
 
+  source_collection "defects", :account_id=>"a1"
+
   define     :preventable, "this.root_cause != 'act_of_god'"
   define     :product_name, "this.product.name"
   define     :current_year, "'{{date_today_iso}}'.substring(0,4)"

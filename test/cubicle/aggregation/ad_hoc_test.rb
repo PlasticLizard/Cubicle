@@ -5,6 +5,7 @@ class AdHocTest < ActiveSupport::TestCase
     setup do
       Defect.create_test_data
       @results =  Cubicle::Aggregation::AdHoc.new("defects") do
+        filter :account_id=>"a1"
         dimension :product, :field_name=>"product.name"
         count :total, :field_name=>"defect_id"
       end.query

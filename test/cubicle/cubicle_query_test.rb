@@ -220,6 +220,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
         end
       end
       should "return a filtered subset of data" do
+        puts @results.inspect
         assert_equal 2, @results.length
         assert_equal "Evil's Pickling Spice", @results[0]["product"]
         assert_equal "Sad Day Moonshine", @results[1]["product"]
@@ -332,6 +333,7 @@ class CubicleQueryTest < ActiveSupport::TestCase
         end
       end
       should "present MTD data based on Time.now" do
+        puts @results.inspect
         assert_equal 1, @results.length
         assert_in_delta 18.71, @results[0]["total_cost"],0.0001
       end

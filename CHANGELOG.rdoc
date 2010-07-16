@@ -1,3 +1,7 @@
+==0.1.31
+  *Added ability to filter aggregations from within the cubicle definition. Particularly useful in STI situations
+   to prepare a cubicle for a particular value of _type.
+
 ==0.1.30
   *Added duration in weeks.
   

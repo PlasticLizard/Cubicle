@@ -2,11 +2,13 @@ module Cubicle
   module Aggregation
     module Dsl
       
-      def source_collection_name(collection_name = nil)
+      def source_collection_name(collection_name = nil, query={})
+        filter query unless query.blank?
         return @source_collection = collection_name if collection_name
         @source_collection ||= name.chomp("Cubicle").chomp("Cube").chomp("Aggregation").underscore.pluralize
       end
       alias source_collection_name= source_collection_name
+      alias source_collection source_collection_name
 
       def target_collection_name(collection_name = nil)
         return nil if transient?
@@ -14,6 +16,11 @@ module Cubicle
         @target_name ||= "cubicle.fact.#{name.blank? ? source_collection_name : name.underscore}"
       end
       alias target_collection_name= target_collection_name
+
+      def filter(query=nil)
+        return (@query ||= nil) unless query
+        @query = query
+      end
 
       def dimension(*args)
         dimensions << Cubicle::Dimension.new(*args)

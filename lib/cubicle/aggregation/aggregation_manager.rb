@@ -112,6 +112,10 @@ module Cubicle
         reason = options.delete(:reason) || "Unknown"
         agg_info= options.delete(:aggregation_info)
 
+        if aggregation.filter && (query.transient? || query == aggregation)
+          (options['query'] ||= {}).merge!(aggregation.filter)
+        end
+        
         result = map_reduce(query.source_collection_name,expand_template(map, view),reduce,options)
 
         @profiler.record_map_reduce_result(query,options,result,reason,agg_info)

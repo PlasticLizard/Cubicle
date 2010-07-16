@@ -10,6 +10,7 @@ class Defect
   #key :outcome, String
   #key :cost, Float
   #key :root_cause, String
+  #key :account_id=>String
 
   def self.collection
     Cubicle.mongo.database["defects"]
@@ -34,8 +35,8 @@ class Defect
                   :ms1=>t1,
                   :ms2=>t2,
                   :ms3=>t3,
-                  :ms4=>t4
-
+                  :ms4=>t4,
+                  :account_id=>"a1"
     t1,t2,t3,t4 = time, time.advance(:days=>2),time.advance(:days=>4),time.advance(:days=>28)
     Defect.create :defect_id=>"2",
                   :manufacture_date=>"2010-01-01",
@@ -49,10 +50,12 @@ class Defect
                   :ms1=>t1,
                   :ms2=>t2,
                   :ms3=>t3,
-                  :ms4=>t4
+                  :ms4=>t4,
+                  :account_id=>"a1"
   end
 
   def self.create_test_data
+
     Defect.create :defect_id=>"1",
                   :manufacture_date=>"2010-01-01",
                   :manufacture_time=>"2010-01-01".to_time,
@@ -61,7 +64,8 @@ class Defect
                   :operator=>"Franny",
                   :outcome=>"Repaired",
                   :cost=>6.50,
-                  :root_cause=>:act_of_god
+                  :root_cause=>:act_of_god,
+                  :account_id=>"a1"
 
     Defect.create :defect_id=>"2",
                   :manufacture_date=>"2010-01-05",
@@ -71,7 +75,8 @@ class Defect
                   :operator=>"Seymour",
                   :outcome=>"Discarded",
                   :cost=>0.02,
-                  :root_cause=>:operator_error
+                  :root_cause=>:operator_error ,
+                  :account_id=>"a1"
 
     Defect.create :defect_id=>"3",
                   :manufacture_date=>"2010-02-01",
@@ -81,7 +86,8 @@ class Defect
                   :operator=>"Zooey",
                   :outcome=>"Consumed",
                   :cost=>2.94,
-                  :root_cause=>:poor_judgment
+                  :root_cause=>:poor_judgment,
+                  :account_id=>"a1"
 
     Defect.create :defect_id=>"4",
                   :manufacture_date=>"2009-12-09",
@@ -91,7 +97,8 @@ class Defect
                   :operator=>"Buddy",
                   :outcome=>"Repaired",
                   :cost=>0.43,
-                  :root_cause=>:act_of_god
+                  :root_cause=>:act_of_god,
+                  :account_id=>"a1"
 
     Defect.create :defect_id=>"5",
                   :manufacture_date=>"2010-01-01",
@@ -101,6 +108,19 @@ class Defect
                   :operator=>"Franny",
                   :outcome=>"Repaired",
                   :cost=>12.19,
-                  :root_cause=>:defective_materials
+                  :root_cause=>:defective_materials,
+                  :account_id=>"a1"
+
+    #Should be filtered out
+    Defect.create :defect_id=>"6",
+                  :manufacture_date=>"2009-12-09",
+                  :manufacture_time=>"2009-12-09".to_time,
+                  :product=>{:name=>"Brush Fire Bottle Rockets",:category=>"Fireworks"},
+                  :plant=>{:name=>"Plant19",:address=>{:region=>"South",:location=>"Burmingham, Al"}},
+                  :operator=>"Buddy",
+                  :outcome=>"Repaired",
+                  :cost=>10000,
+                  :root_cause=>:act_of_god,
+                  :account_id=>"a2"
   end
 end
