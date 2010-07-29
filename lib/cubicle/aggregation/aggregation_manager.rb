@@ -92,7 +92,6 @@ module Cubicle
         view = AggregationView.new(aggregation,query)
 
         map, reduce = MapReduceHelper.generate_map_function(query), MapReduceHelper.generate_reduce_function
-
         options[:finalize] = MapReduceHelper.generate_finalize_function(query)
         options["query"] = expand_template(prepare_filter(query,options[:where] || {}),view)
 

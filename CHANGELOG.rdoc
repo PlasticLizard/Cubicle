@@ -1,3 +1,11 @@
+==0.5.0
+  *Added the ability to define aggregations that expand embedded collections, such as hashes or arrays, using the
+  'expand' expression in the aggregation DSL. Bumping version to 0.5.0 (yes, quite a leap) because this was the last
+  missing piece of functionality before I feel the library is more or less functional for most uses. There is still
+  one more major aspect of Cubicle that needs some work, and that is how dates are handled. Once that is finished,
+  I think it will be ready for 1.0 as it is already in production use in two of our systems and being integrated
+  without troubles into a third.
+
 ==0.1.31
   *Added ability to filter aggregations from within the cubicle definition. Particularly useful in STI situations
    to prepare a cubicle for a particular value of _type.

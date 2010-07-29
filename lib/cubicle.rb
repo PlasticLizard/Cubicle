@@ -11,6 +11,7 @@ dir = File.dirname(__FILE__)
  "ordered_hash_with_indifferent_access",
  "member",
  "member_list",
+ "expansion",
  "measure",
  "calculated_measure",
  "dimension",

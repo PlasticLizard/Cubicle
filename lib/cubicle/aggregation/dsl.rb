@@ -27,6 +27,14 @@ module Cubicle
         dimensions[-1]
       end
 
+      def expand(*args)
+        expansions << Cubicle::Expansion.new(*args)
+      end
+
+      def expansions
+        return @expansions ||= []
+      end
+
       def named_expressions
         return @named_expressions ||= OrderedHashWithIndifferentAccess.new 
       end

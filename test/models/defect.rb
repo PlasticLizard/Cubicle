@@ -17,7 +17,7 @@ class Defect
   end
 
   def self.create(attributes)
-    self.collection.insert(attributes)
+    self.collection.insert(attributes,{})
   end
 
   def self.create_duration_test_data
@@ -65,7 +65,9 @@ class Defect
                   :outcome=>"Repaired",
                   :cost=>6.50,
                   :root_cause=>:act_of_god,
-                  :account_id=>"a1"
+                  :account_id=>"a1",
+                  :audits=>[{:auditor=>"Nina", :score=>1},{:auditor=>"Pinta", :score=>2}],
+                  :hash_pipes=>{:defect=>{:vote=>"yes",:weight=>1},:metaphor=>{:vote=>"no",:weight=>2}}
 
     Defect.create :defect_id=>"2",
                   :manufacture_date=>"2010-01-05",
@@ -76,7 +78,9 @@ class Defect
                   :outcome=>"Discarded",
                   :cost=>0.02,
                   :root_cause=>:operator_error ,
-                  :account_id=>"a1"
+                  :account_id=>"a1",
+                  :audits=>[{:auditor=>"Santa Maria", :score=>3},{:auditor=>"Nina",:score=>4}],
+                  :hash_pipes=>{:must=>{:vote=>"no",:weight=>3},:die=>{:vote=>"yes",:weight=>1}}
 
     Defect.create :defect_id=>"3",
                   :manufacture_date=>"2010-02-01",
@@ -87,7 +91,9 @@ class Defect
                   :outcome=>"Consumed",
                   :cost=>2.94,
                   :root_cause=>:poor_judgment,
-                  :account_id=>"a1"
+                  :account_id=>"a1",
+                  :audits=>[{:auditor=>"Pinta",:score=>5}],
+                  :hash_pipes=>{:defect=>{:vote=>"no",:weight=>2}}
 
     Defect.create :defect_id=>"4",
                   :manufacture_date=>"2009-12-09",
@@ -98,7 +104,9 @@ class Defect
                   :outcome=>"Repaired",
                   :cost=>0.43,
                   :root_cause=>:act_of_god,
-                  :account_id=>"a1"
+                  :account_id=>"a1",
+                  :audits=>[{:auditor=>"Santa Maria",:score=>4}, {:auditor=>"Nina", :score=>3}],
+                  :hash_pipes=>{}
 
     Defect.create :defect_id=>"5",
                   :manufacture_date=>"2010-01-01",
@@ -109,7 +117,8 @@ class Defect
                   :outcome=>"Repaired",
                   :cost=>12.19,
                   :root_cause=>:defective_materials,
-                  :account_id=>"a1"
+                  :account_id=>"a1",
+                  :audits=>[]
 
     #Should be filtered out
     Defect.create :defect_id=>"6",

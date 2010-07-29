@@ -12,9 +12,13 @@ module Cubicle
         end
 
         def generate_map_function(query)
-          <<MAP
-    function(){emit(#{generate_keys_string(query)},#{generate_values_string(query)});}
-MAP
+          map="emit(#{generate_keys_string(query)},#{generate_values_string(query)});"
+          if query.respond_to?(:expansions)
+            query.expansions.reverse.each do |expansion|
+              map = "for (#{expansion.index_variable} in #{expansion.expression}){ var #{expansion.value_variable} = #{expansion.expression}[#{expansion.index_variable}];#{map}}"                
+            end if query.expansions
+          end
+          "function(){#{map}}"
         end
 
         def generate_reduce_function()
