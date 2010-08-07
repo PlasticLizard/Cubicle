@@ -137,9 +137,9 @@ module Cubicle
         #return collection if query.all_dimensions?
 
         aggregation_query = query.clone
-        #If the query needs to filter on a field, it had better be in the aggregation...if it isn't a $where filter...
+        #If the query needs to filter on a field, it had better be in the aggregation...if it isn't a $operator...
         filter = (query.where if query.respond_to?(:where))
-        filter.keys.each {|filter_key|aggregation_query.select(filter_key) unless filter_key=~/\$where/} unless filter.blank?
+        filter.keys.each {|filter_key|aggregation_query.select(filter_key) unless filter_key.to_s.start_with?("$")} unless filter.blank?
 
         dimension_names = aggregation_query.dimension_names.sort
         @metadata.aggregation_for(dimension_names)
@@ -244,7 +244,7 @@ module Cubicle
 
         map    = BSON::Code.new(map) unless map.is_a?(BSON::Code)
         reduce = BSON::Code.new(reduce) unless reduce.is_a?(BSON::Code)
-        puts map
+
         hash = BSON::OrderedHash.new
         hash['mapreduce'] = source_collection_name
         hash['map'] = map

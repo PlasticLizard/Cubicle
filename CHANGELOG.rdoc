@@ -1,3 +1,7 @@
+==0.5.1
+  *Minor adjustment to prevent Cubicle from vomiting blood and pieces of chewed up cats when filtering a query
+  using MongoDB's new $or operator.
+
 ==0.5.0
   *Added the ability to define aggregations that expand embedded collections, such as hashes or arrays, using the
   'expand' expression in the aggregation DSL. Bumping version to 0.5.0 (yes, quite a leap) because this was the last
