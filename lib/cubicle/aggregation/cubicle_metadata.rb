@@ -18,12 +18,16 @@ module Cubicle
         @aggregation = aggregation
       end
 
-      def aggregation_for(member_names = [])
-        AggregationMetadata.new(self,member_names)
+      def aggregation_for(member_names = [], force=false)
+        AggregationMetadata.new(self,member_names,force)
       end
 
-      def expire!
-        AggregationMetadata.expire(self)
+      def expire!(opts={})
+        AggregationMetadata.expire(self,opts)
+      end
+
+      def unprotect_all
+        AggregationMetadata.unprotect_all(self)
       end
 
       def update_processing_stats

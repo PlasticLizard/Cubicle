@@ -4,7 +4,7 @@ class HashPipeCubicle
   source_collection "defects"
   expand :hash_pipes
 
-  define :score, '(hash_pipe_value.vote == "no" ? -1 : 1) * hash_pipe_value.weight'
+  define :score, '(hash_pipe.vote == "no" ? -1 : 1) * hash_pipe.weight'
 
   dimension  :product,           :field_name=>'product.name'
 

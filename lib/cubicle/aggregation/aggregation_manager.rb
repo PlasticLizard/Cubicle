@@ -67,25 +67,31 @@ module Cubicle
 
       def process(options={})
         @metadata.update_processing_stats do
-          expire!
           aggregate(aggregation,options.merge(:reason=>"Processing fact collection"))
+
+          @metadata.unprotect_all #Mark all aggregations available for deletion.
           #Sort desc by length of array, so that larget
           #aggregations are processed first, hopefully increasing efficiency
           #of the processing step
           aggregation.aggregations.sort!{|a,b|b.length<=>a.length}
           aggregation.aggregations.each do |member_list|
             agg_start = Time.now
-            aggregation_for(aggregation.query(:defer=>true){select member_list})
+            aggregation_for(aggregation.query(:defer=>true){select member_list},true)
             Cubicle.logger.info "#{aggregation.name} aggregation #{member_list.inspect} processed in #{Time.now-agg_start} seconds"
           end
+          expire_metadata!
         end
       end
 
       def expire!
         @profiler.measure(:expire_aggregations, :reason=>"Expire aggregations") do
           collection.drop
-          @metadata.expire!
+          expire_metadata! :force=>true
         end
+      end
+
+      def expire_metadata!(opts={})
+        @metadata.expire!(opts)
       end
 
       def aggregate(query,options={})
@@ -133,7 +139,7 @@ module Cubicle
       protected
 
 
-      def aggregation_for(query)
+      def aggregation_for(query, protect=false)
         #return collection if query.all_dimensions?
 
         aggregation_query = query.clone
@@ -142,7 +148,7 @@ module Cubicle
         filter.keys.each {|filter_key|aggregation_query.select(filter_key) unless filter_key.to_s.start_with?("$")} unless filter.blank?
 
         dimension_names = aggregation_query.dimension_names.sort
-        @metadata.aggregation_for(dimension_names)
+        @metadata.aggregation_for(dimension_names,protect)
       end
 
       def ensure_indexes(collection_name,dimension_names)

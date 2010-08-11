@@ -1,3 +1,9 @@
+==0.5.2
+  *Fixed a bug with the naming of expansion variables when expanding embedded collections or hashes
+  *Refactored the cube processing logic a little to make processing an aggregation somewhat safe even
+   while the aggregation is being queried, by not dropping cached aggregated data but simply overwriting it
+   when map reduce is complete.
+
 ==0.5.1
   *Minor adjustment to prevent Cubicle from vomiting blood and pieces of chewed up cats when filtering a query
   using MongoDB's new $or operator.

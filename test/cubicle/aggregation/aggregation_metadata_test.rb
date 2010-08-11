@@ -77,16 +77,20 @@ class AggregationMetadataTest < ActiveSupport::TestCase
     should "drop any aggregation columns and remove metadata rows from the database" do
       Defect.create_test_data
       DefectCubicle.process
+      Cubicle::Aggregation::AggregationMetadata.min_records_to_reduce = 1
       @cm = Cubicle::Aggregation::CubicleMetadata.new(DefectCubicle)
       agg_info = Cubicle::Aggregation::AggregationMetadata.new(@cm,[:product])
 
       assert Cubicle.mongo.database.collection_names.include?(agg_info.target_collection_name)
-      assert Cubicle::Aggregation::AggregationMetadata.collection.find(:aggregation=>"DefectCubicle").count > 0
+      #two standard aggregations and the ad hoc one just created
+      assert_equal 3, Cubicle::Aggregation::AggregationMetadata.collection.find(:aggregation=>"DefectCubicle").count
 
       Cubicle::Aggregation::AggregationMetadata.expire(@cm)
 
+      #the two standard ('protected') aggregations should remain, the ad hoc one should be gone
       assert !Cubicle.mongo.database.collection_names.include?(agg_info.target_collection_name)
-      assert_equal 0, Cubicle::Aggregation::AggregationMetadata.collection.find(:aggregation=>"DefectCubicle").count
+      assert_equal 2, Cubicle::Aggregation::AggregationMetadata.collection.find(:aggregation=>"DefectCubicle").count
+      Cubicle::Aggregation::AggregationMetadata.min_records_to_reduce = nil
     end
   end
 end
