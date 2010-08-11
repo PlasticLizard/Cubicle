@@ -6,7 +6,7 @@ module Cubicle
 
       @value_variable = self.options[:value] ||
                         self.options[:value_variable] ||
-                        "#{self.name.to_s.singularize}_value"
+                        "#{self.name.to_s.singularize}"
 
       @index_variable = self.options[:index] ||
                         self.options[:index_variable] ||
