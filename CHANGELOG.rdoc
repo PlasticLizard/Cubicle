@@ -1,3 +1,6 @@
+==0.5.3
+  *Fixed a bug with date ranges in support.rb
+
 ==0.5.2
   *Fixed a bug with the naming of expansion variables when expanding embedded collections or hashes
   *Refactored the cube processing logic a little to make processing an aggregation somewhat safe even
