@@ -13,7 +13,7 @@ module Cubicle
         self[:date_today_iso] = "#{time_now.strftime('%Y-%m-%d')}"
 
         self[:time_now_utc] = "new Date(#{time_now.utc.to_i*1000})"
-        self[:date_today_utc] = "new Date(#{time_now.to_date.to_time.utc.to_i*1000})"
+        self[:date_today_utc] = "new Date(#{time_now.to_date.to_time_in_current_zone.to_i*1000})"
         self[:time_now_utc_iso] = "#{time_now.utc.iso8601}"
         self[:date_today_utc_iso] = "#{time_now.utc.strftime('%Y-%m-%d')}"
 
