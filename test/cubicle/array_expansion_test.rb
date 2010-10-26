@@ -14,7 +14,7 @@ class ArrayExpansionTest < ActiveSupport::TestCase
         by     :auditor
       end
       assert_equal 3, query_results.length;
-      puts query_results.inspect
+      #puts query_results.inspect
       assert_equal 8/3.0, query_results["Nina"][0]["average_score"]
       assert_equal 7/2.0, query_results["Pinta"][0]["average_score"]
       assert_equal 7/2.0, query_results["Santa Maria"][0]["average_score"]
