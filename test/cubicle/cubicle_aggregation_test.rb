@@ -13,7 +13,7 @@ class CubicleAggregationTest < ActiveSupport::TestCase
           Time.now = "4/1/2010"
         end
         should "return a collection of appropriate aggregated values based on the cubicle parameters" do
-          puts @results.inspect
+          #puts @results.inspect
           assert_equal 4, @results.length
 
           @results.sort!{|x,y|x.manufacture_date<=>y.manufacture_date}

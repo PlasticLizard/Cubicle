@@ -16,7 +16,7 @@ class BucketizedDimensionTest < ActiveSupport::TestCase
     end
     should "handle decimal steps and bumps with an integer range" do
       dim = Cubicle::BucketizedDimension.new(:test, "this.value", 1..2, :step=>0.5, :bump=>0.01)
-      puts dim.to_js_value
+      #puts dim.to_js_value
       assert_equal "(function(val){if(val==null || isNaN(val))return null; if (val <= 1.0) return '<= 1.0';if (val > 1.0 && val <= 1.5) return '1.01 - 1.5';if (val > 1.5 && val <= 2.0) return '1.51 - 2.0';if (val > 2.0) return '> 2.0'})(this.value)",
                    dim.to_js_value
     end
