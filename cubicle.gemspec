@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email = ['hereiam@sonic.net']
   s.version = Cubicle::VERSION
   s.platform = Gem::Platform::RUBY
-  s.files = Dir.glob("{lib,test}/**/*") + %w[LICENSE README.rdoc]
+  s.files = Dir.glob("{lib,test}/**/*") + %w[LICENSE.txt README.rdoc]
 
   s.add_dependency('i18n')
   s.add_dependency('activesupport', '>= 2.3')
