@@ -1,0 +1,43 @@
+PATH
+  remote: .
+  specs:
+    cubicle (0.5.3)
+      activesupport (>= 2.3)
+      bson (>= 1.1.1)
+      bson_ext (>= 1.1.1)
+      i18n
+      mongo (>= 1.1.1)
+      mustache (>= 0.10.0)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activesupport (3.0.3)
+    bson (1.1.2)
+    bson_ext (1.1.2)
+    git (1.2.5)
+    i18n (0.4.2)
+    jeweler (1.5.1)
+      bundler (~> 1.0.0)
+      git (>= 1.2.5)
+      rake
+    mongo (1.1.2)
+      bson (>= 1.1.1)
+    mustache (0.11.2)
+    rake (0.8.7)
+    shoulda (2.10.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activesupport (>= 2.3)
+  bson (>= 1.1.1)
+  bson_ext (>= 1.1.1)
+  cubicle!
+  i18n
+  jeweler
+  mongo (>= 1.1.1)
+  mustache (>= 0.10.0)
+  rake
+  shoulda (= 2.10.3)

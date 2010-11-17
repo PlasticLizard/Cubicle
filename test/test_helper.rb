@@ -2,6 +2,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 dir = File.dirname(__FILE__)
 require File.join(dir,"..","lib","cubicle")
+require "active_support"
 require 'active_support/test_case'
 require "shoulda"
 require "logger"
