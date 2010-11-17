@@ -31,7 +31,8 @@ module Cubicle
                                when Cubicle::Aggregation::CubicleMetadata then aggregation.aggregation.name
                                else aggregation.name
                              end
-          collection.update({:aggregation=>aggregation_name},{"$set"=>{:protect=>false}})
+          collection.find(:aggregation=>aggregation_name).each {|a| a['protect'] = false; collection.save(a) }
+          # collection.update({:aggregation=>aggregation_name},{"$set"=>{:protect=>false}})
         end
 
         def expire(aggregation,opts={})
@@ -75,7 +76,7 @@ module Cubicle
           end
 
           unless @attributes
-            self.class.collection.remove(:aggregation=>@cubicle_metadata.aggregation.name,:member_names=>member_names)
+            self.class.collection.remove(:aggregation=>@cubicle_metadata.aggregation.name,:member_names=>member_names) unless protect
             @attributes = HashWithIndifferentAccess.new({:aggregation=>@cubicle_metadata.aggregation.name,
                                                          :member_names=>member_names,
                                                          :document_count=>-1,
